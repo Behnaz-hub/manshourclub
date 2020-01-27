@@ -63,7 +63,11 @@ flutter:
   - images/products/shoe1.jpg
   - images/products/skt2.jpeg
   - images/products/skt1.jpeg
-
+fonts:
+  - family: IRANSans
+    fonts:
+      - asset: fonts/IRANSans.ttf
+      - asset: fonts/IRANSansL.ttf
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
