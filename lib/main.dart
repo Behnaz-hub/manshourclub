@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:manshourclub/cart/cart.dart';
-
+...
 void main() {
   runApp(
       MaterialApp(
