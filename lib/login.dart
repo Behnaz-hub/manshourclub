@@ -28,8 +28,11 @@ class _LoginPageState extends State<LoginPage>
   bool _obscureTextSignup = true;
   bool _obscureTextSignupConfirm = true;
 
-  TextEditingController signupEmailController = new TextEditingController();
+  TextEditingController signupMobileController = new TextEditingController();
   TextEditingController signupNameController = new TextEditingController();
+  RegExp mobileRegex = new RegExp(r'^[0][9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$');
+  RegExp passwordRegex = new RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$');
+
   TextEditingController signupPasswordController = new TextEditingController();
   TextEditingController signupConfirmPasswordController =
       new TextEditingController();
@@ -131,7 +134,7 @@ class _LoginPageState extends State<LoginPage>
     _pageController = PageController();
   }
 
-  void showInSnackBar(String value) {
+  void showInSnackBar(String value,Color color,int secs) {
     FocusScope.of(context).requestFocus(new FocusNode());
     _scaffoldKey.currentState?.removeCurrentSnackBar();
     _scaffoldKey.currentState.showSnackBar(new SnackBar(
@@ -141,8 +144,8 @@ class _LoginPageState extends State<LoginPage>
         style: TextStyle(
             color: Colors.white, fontSize: 16.0, fontFamily: "IRANSans"),
       ),
-      backgroundColor: Colors.blue,
-      duration: Duration(seconds: 3),
+      backgroundColor: color,
+      duration: Duration(seconds: secs),
     ));
   }
 
@@ -159,11 +162,12 @@ class _LoginPageState extends State<LoginPage>
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
+
             Expanded(
               child: FlatButton(
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
-                onPressed: _onSignUpButtonPress,
+                onPressed: _onSignInButtonPress,
                 child: Text(
                   "ثبت نام",
                   style: TextStyle(
@@ -175,7 +179,7 @@ class _LoginPageState extends State<LoginPage>
               child: FlatButton(
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
-                onPressed: _onSignInButtonPress,
+                onPressed: _onSignUpButtonPress,
                 child: Text(
                   "ورود",
                   style: TextStyle(
@@ -272,8 +276,9 @@ class _LoginPageState extends State<LoginPage>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextField(
+                          textDirection: TextDirection.ltr,
                           focusNode: myFocusNodeEmail,
-                          controller: signupEmailController,
+                          controller: signupMobileController,
                           keyboardType: TextInputType.number,
                           style: TextStyle(
                               fontFamily: "IRANSans",
@@ -376,7 +381,7 @@ class _LoginPageState extends State<LoginPage>
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: 500.0),
+                margin: EdgeInsets.only(top: 520.0),
                 decoration: new BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   boxShadow: <BoxShadow>[
@@ -411,12 +416,13 @@ class _LoginPageState extends State<LoginPage>
                       child: Text(
                         "ثبت نام",
                         style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25.0,
-                            fontFamily: "WorkSansBold"),
+                          color: Colors.white,
+                          fontSize: 20.0,
+                          fontFamily: 'IRANSans',
+                        ),
                       ),
                     ),
-                    onPressed: () => showInSnackBar("SignUp button pressed")),
+                    onPressed: _onSignUpButtonPress),
               ),
             ],
           ),
@@ -442,7 +448,7 @@ class _LoginPageState extends State<LoginPage>
                 ),
                 child: Container(
                   width: 300.0,
-                  height: 190.0,
+                  height: 240.0,
                   child: Column(
                     children: <Widget>[
                       Padding(
@@ -492,7 +498,7 @@ class _LoginPageState extends State<LoginPage>
                               size: 22.0,
                               color: Colors.black,
                             ),
-                            hintText: "Password",
+                            hintText: "رمز عبور",
                             hintStyle: TextStyle(
                                 fontFamily: "IRANSans", fontSize: 17.0),
                             suffixIcon: GestureDetector(
@@ -508,12 +514,17 @@ class _LoginPageState extends State<LoginPage>
                           ),
                         ),
                       ),
+                      Container(
+                        width: 250.0,
+                        height: 1.0,
+                        color: Colors.grey[400],
+                      ),
                     ],
                   ),
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: 170.0),
+                margin: EdgeInsets.only(top: 220.0),
                 decoration: new BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   boxShadow: <BoxShadow>[
@@ -546,14 +557,15 @@ class _LoginPageState extends State<LoginPage>
                       padding: const EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 42.0),
                       child: Text(
-                        "LOGIN",
+                        "ورود",
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize: 25.0,
-                            fontFamily: "WorkSansBold"),
+                            fontSize: 20.0,
+                            fontFamily: "IRANSans"),
                       ),
                     ),
-                    onPressed: () => showInSnackBar("Login button pressed")),
+//                    onPressed: () => showInSnackBar("Login button pressed")
+                ),
               ),
             ],
           ),
@@ -562,12 +574,12 @@ class _LoginPageState extends State<LoginPage>
             child: FlatButton(
                 onPressed: () {},
                 child: Text(
-                  "Forgot Password?",
+                  "رمز عبور خود را فراموش کرده اید؟",
                   style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      color: Colors.white,
+                      decoration: TextDecoration.none,
+                      color: Colors.white70,
                       fontSize: 16.0,
-                      fontFamily: "WorkSansMedium"),
+                      fontFamily: "IRANSans"),
                 )),
           )
         ],
@@ -576,11 +588,24 @@ class _LoginPageState extends State<LoginPage>
   }
 
   void _onSignInButtonPress() {
+    print('jere');
     _pageController.animateToPage(0,
         duration: Duration(milliseconds: 500), curve: Curves.decelerate);
   }
 
   void _onSignUpButtonPress() {
+    if (signupPasswordController.text != signupConfirmPasswordController.text) {
+      showInSnackBar('رمز عبور وارد شده با تکرار آن مطابقت ندارد',Colors.red,3);
+      return;
+    }
+    if (!passwordRegex.hasMatch(signupPasswordController.text)) {
+      showInSnackBar('رمز عبور وارد شده از امنیت کافی برخوردار نیست، رمز عبور شما باید حداقل شامل یک حرف انگلیسی بزرگ، یک حرف انگلیسی کوچک، یک نماد و حداقل 8 رقم باشد.',Colors.amber,7);
+      return;
+    }
+    if (!mobileRegex.hasMatch(signupMobileController.text)) {
+      showInSnackBar('لطفا شماره موبایل خود را به حالت صحیح (با نوشتن صفر وارد نماایید',Colors.lightGreen,3);
+      return;
+    }
     _pageController?.animateToPage(1,
         duration: Duration(milliseconds: 500), curve: Curves.decelerate);
   }
