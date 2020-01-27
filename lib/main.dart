@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:manshourclub/cart/cart.dart';
+import 'package:manshourclub/categories/HorizontalList.dart';
 
 void main() {
   runApp(
     MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Directionality( // add this
         textDirection: TextDirection.rtl, // set this property
+
         child: MyApp(),
       ),
     ),
