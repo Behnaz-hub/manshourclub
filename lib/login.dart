@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:manshourclub/styles/theme.dart' as Theme;
 import 'package:manshourclub/pages/indication_painter.dart';
 
@@ -37,8 +36,8 @@ class _LoginPageState extends State<LoginPage>
 
   PageController _pageController;
 
-  Color right = Colors.black;
-  Color left = Colors.white;
+  Color left = Colors.black;
+  Color right = Colors.white;
 
   @override
   Widget build(BuildContext context) {
@@ -226,7 +225,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.user,
+                              Icons.person,
                               color: Colors.black,
                             ),
                             hintText: "نام",
@@ -255,7 +254,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.user,
+                              Icons.person,
                               color: Colors.black,
                             ),
                             hintText: "نام خانوادگی",
@@ -283,7 +282,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.mobile,
+                              Icons.mobile_screen_share,
                               color: Colors.black,
                             ),
                             hintText: "شماره موبایل",
@@ -311,7 +310,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.lock,
+                              Icons.lock,
                               color: Colors.black,
                             ),
                             hintText: "رمز عبور",
@@ -321,8 +320,8 @@ class _LoginPageState extends State<LoginPage>
                               onTap: _toggleSignup,
                               child: Icon(
                                 _obscureTextSignup
-                                    ? FontAwesomeIcons.eye
-                                    : FontAwesomeIcons.eyeSlash,
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
                                 size: 15.0,
                                 color: Colors.black,
                               ),
@@ -348,7 +347,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.lock,
+                              Icons.lock,
                               color: Colors.black,
                             ),
                             hintText: "تکرار رمز عبور",
@@ -358,8 +357,8 @@ class _LoginPageState extends State<LoginPage>
                               onTap: _toggleSignupConfirm,
                               child: Icon(
                                 _obscureTextSignupConfirm
-                                    ? FontAwesomeIcons.eye
-                                    : FontAwesomeIcons.eyeSlash,
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
                                 size: 15.0,
                                 color: Colors.black,
                               ),
@@ -460,11 +459,11 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.envelope,
+                              Icons.mobile_screen_share,
                               color: Colors.black,
                               size: 22.0,
                             ),
-                            hintText: "Email Address",
+                            hintText: "شماره موبایل",
                             hintStyle: TextStyle(
                                 fontFamily: "IRANSans", fontSize: 17.0),
                           ),
@@ -489,7 +488,7 @@ class _LoginPageState extends State<LoginPage>
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.lock,
+                              Icons.lock,
                               size: 22.0,
                               color: Colors.black,
                             ),
@@ -500,8 +499,8 @@ class _LoginPageState extends State<LoginPage>
                               onTap: _toggleLogin,
                               child: Icon(
                                 _obscureTextLogin
-                                    ? FontAwesomeIcons.eye
-                                    : FontAwesomeIcons.eyeSlash,
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
                                 size: 15.0,
                                 color: Colors.black,
                               ),
