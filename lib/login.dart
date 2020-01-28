@@ -1,8 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:manshourclub/styles/theme.dart' as Theme;
 import 'package:manshourclub/pages/indication_painter.dart';
-
+import 'package:http/http.dart' as http;
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
 
@@ -21,7 +23,7 @@ class _LoginPageState extends State<LoginPage>
   final FocusNode myFocusNodeEmail = FocusNode();
   final FocusNode myFocusNodeName = FocusNode();
 
-  TextEditingController loginEmailController = new TextEditingController();
+  TextEditingController loginMobileController = new TextEditingController();
   TextEditingController loginPasswordController = new TextEditingController();
 
   bool _obscureTextLogin = true;
@@ -163,11 +165,12 @@ class _LoginPageState extends State<LoginPage>
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
 
+
             Expanded(
               child: FlatButton(
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
-                onPressed: _onSignInButtonPress,
+                onPressed: _onSignUpButtonPress,
                 child: Text(
                   "ثبت نام",
                   style: TextStyle(
@@ -179,7 +182,7 @@ class _LoginPageState extends State<LoginPage>
               child: FlatButton(
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
-                onPressed: _onSignUpButtonPress,
+                onPressed: _onSignInButtonPress,
                 child: Text(
                   "ورود",
                   style: TextStyle(
@@ -456,8 +459,9 @@ class _LoginPageState extends State<LoginPage>
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextField(
                           focusNode: myFocusNodeEmailLogin,
-                          controller: loginEmailController,
-                          keyboardType: TextInputType.emailAddress,
+                          controller: loginMobileController,
+                          textDirection: TextDirection.ltr,
+                          keyboardType: TextInputType.number,
                           style: TextStyle(
                               fontFamily: "IRANSans",
                               fontSize: 16.0,
@@ -564,7 +568,7 @@ class _LoginPageState extends State<LoginPage>
                             fontFamily: "IRANSans"),
                       ),
                     ),
-//                    onPressed: () => showInSnackBar("Login button pressed")
+                    onPressed: _onSignInButtonPress
                 ),
               ),
             ],
@@ -587,10 +591,28 @@ class _LoginPageState extends State<LoginPage>
     );
   }
 
-  void _onSignInButtonPress() {
-    print('jere');
-    _pageController.animateToPage(0,
-        duration: Duration(milliseconds: 500), curve: Curves.decelerate);
+  void _onSignInButtonPress() async {
+    if (!mobileRegex.hasMatch(loginMobileController.text)) {
+      showInSnackBar(
+          'لطفا شماره موبایل خود را به حالت صحیح (با نوشتن صفر وارد نماایید',
+          Colors.lightGreen, 3);
+    } else {
+      final paramDic = {
+        "mobile": loginMobileController.text,
+        "password": loginPasswordController.text,
+      };
+      final loginData = await http
+          .post(
+          "https://manshourclub.com/API/Customers/Login.php", body: paramDic);
+      final response = jsonDecode(loginData.body);
+      if (response['status'] == 'login') {
+        print('dalam');
+      } else {
+        showInSnackBar('شماره موبایل یا رمز عبور وارد شده اشتباه است!', Colors.deepOrange, 4);
+      }
+      _pageController.animateToPage(0,
+          duration: Duration(milliseconds: 500), curve: Curves.decelerate);
+    }
   }
 
   void _onSignUpButtonPress() {
@@ -606,6 +628,7 @@ class _LoginPageState extends State<LoginPage>
       showInSnackBar('لطفا شماره موبایل خود را به حالت صحیح (با نوشتن صفر وارد نماایید',Colors.lightGreen,3);
       return;
     }
+
     _pageController?.animateToPage(1,
         duration: Duration(milliseconds: 500), curve: Curves.decelerate);
   }
