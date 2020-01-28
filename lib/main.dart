@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:manshourclub/cart/cart.dart';
 import 'package:manshourclub/categories/HorizontalList.dart';
+import 'package:manshourclub/categories/Products.dart';
 import 'package:manshourclub/login.dart';
 
 void main() {
@@ -125,7 +126,7 @@ class _MyHomeState extends State<MyApp>{
                 child: new ListTile(
                   onTap:(){
                     Navigator.push(context, new MaterialPageRoute(
-//                      builder:(BuildContext context)=>new Cart(),
+                      builder:(BuildContext context)=>new Cart(),
                     )
                     );
                   } ,
@@ -186,7 +187,7 @@ class _MyHomeState extends State<MyApp>{
             //making shopping products
             new Container(
               height: 400.0,
-//              child: new Products(),
+              child: new Products(),
             )
 
           ],
