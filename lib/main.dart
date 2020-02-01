@@ -177,7 +177,7 @@ class _MyHomeState extends State<MyApp>{
 
             //Horizontal ListView
          new Container(
-              height: 400.0,
+              height: 200.0,
               child:  new HorizontalList(),
             ),
 
