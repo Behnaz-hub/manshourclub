@@ -15,7 +15,7 @@ class HorizontalList extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           asnaf = snapshot.data;
-          return _jobsListView(asnaf);
+          return  _jobsListView(asnaf);
         } else if (snapshot.hasError) {
           return Text("${snapshot.error}");
         }
@@ -27,13 +27,31 @@ class HorizontalList extends StatelessWidget {
   }
   ListView _jobsListView(data) {
     return ListView.builder(
-
         itemCount: asnaf.length ,
+        scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
 
           return
+            Container(
+                height: 100,
+                child: Column(
+                    children:[
+                      Image.network(
+                        'http://manshourclub.com/admin/images/asnaf/icons/'+data[index].icon,
+                        width: 50,
+                        height: 50,
+                      ),
+                      Text(
+                          data[index].name,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 20,
+                          ))
+                    ]
 
-            _tile(data[index].name,'http://manshourclub.com/admin/images/asnaf/icons/'+data[index].icon);
+                )
+            );
+
         });
   }
 }
@@ -53,17 +71,28 @@ Future<List<Senf>> _fetchJobs() async {
 }
 
 ListTile _tile(String title, String icon) => ListTile(
-  title: Text(title,
-      style: TextStyle(
-        fontWeight: FontWeight.w500,
-        fontSize: 20,
-      )),
+
 
   leading:
-  Image.asset(
-    icon,
-      width: 50,
-    height: 50,
-  ),
+      Container(
+        height: 100,
+        child: Column(
+          children:[
+            Image.network(
+              icon,
+              width: 50,
+              height: 50,
+            ),
+            Text(
+                title,
+                style: TextStyle(
+                  fontWeight: FontWeight.w300,
+                  fontSize: 20,
+                ))
+          ]
+
+        )
+      )
+
 );
 
