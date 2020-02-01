@@ -9,12 +9,12 @@ class ProductDetails extends StatefulWidget {
   final productDetailsName;
   final productDetailsImage;
   final productDetailsNewPrice;
-  final productDetailsOldPrice;
+  final productProviderName;
 
   ProductDetails({
     this.productDetailsName,
     this.productDetailsImage,
-    this.productDetailsOldPrice,
+    this.productProviderName,
     this.productDetailsNewPrice
   });
 
@@ -96,7 +96,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                         children: <Widget>[
                           new Expanded(
                               child:new Text(
-                                "\$${widget.productDetailsOldPrice}",
+                                "\$${widget.productProviderName}",
                                 style: new TextStyle(
                                   decoration: TextDecoration.lineThrough,
                                 ),)

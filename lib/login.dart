@@ -1,10 +1,11 @@
+import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import 'package:load/load.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:manshourclub/styles/theme.dart' as Theme;
 import 'package:manshourclub/pages/indication_painter.dart';
-import 'package:http/http.dart' as http;
+
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
 
@@ -32,8 +33,10 @@ class _LoginPageState extends State<LoginPage>
 
   TextEditingController signupMobileController = new TextEditingController();
   TextEditingController signupNameController = new TextEditingController();
-  RegExp mobileRegex = new RegExp(r'^[0][9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$');
-  RegExp passwordRegex = new RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$');
+  RegExp mobileRegex =
+      new RegExp(r'^[0][9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$');
+  RegExp passwordRegex = new RegExp(
+      r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$');
 
   TextEditingController signupPasswordController = new TextEditingController();
   TextEditingController signupConfirmPasswordController =
@@ -63,8 +66,8 @@ class _LoginPageState extends State<LoginPage>
                 decoration: new BoxDecoration(
                   gradient: new LinearGradient(
                       colors: [
-                        Theme.Colors.loginGradientStart,
-                        Theme.Colors.loginGradientEnd
+                        Theme.MYColors.loginGradientStart,
+                        Theme.MYColors.loginGradientEnd
                       ],
                       begin: const FractionalOffset(0.0, 0.0),
                       end: const FractionalOffset(1.0, 1.0),
@@ -136,7 +139,7 @@ class _LoginPageState extends State<LoginPage>
     _pageController = PageController();
   }
 
-  void showInSnackBar(String value,Color color,int secs) {
+  void showInSnackBar(String value, Color color, int secs) {
     FocusScope.of(context).requestFocus(new FocusNode());
     _scaffoldKey.currentState?.removeCurrentSnackBar();
     _scaffoldKey.currentState.showSnackBar(new SnackBar(
@@ -164,8 +167,6 @@ class _LoginPageState extends State<LoginPage>
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-
-
             Expanded(
               child: FlatButton(
                 splashColor: Colors.transparent,
@@ -389,20 +390,20 @@ class _LoginPageState extends State<LoginPage>
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   boxShadow: <BoxShadow>[
                     BoxShadow(
-                      color: Theme.Colors.loginGradientStart,
+                      color: Theme.MYColors.loginGradientStart,
                       offset: Offset(1.0, 6.0),
                       blurRadius: 20.0,
                     ),
                     BoxShadow(
-                      color: Theme.Colors.loginGradientEnd,
+                      color: Theme.MYColors.loginGradientEnd,
                       offset: Offset(1.0, 6.0),
                       blurRadius: 20.0,
                     ),
                   ],
                   gradient: new LinearGradient(
                       colors: [
-                        Theme.Colors.loginGradientEnd,
-                        Theme.Colors.loginGradientStart
+                        Theme.MYColors.loginGradientEnd,
+                        Theme.MYColors.loginGradientStart
                       ],
                       begin: const FractionalOffset(0.2, 0.2),
                       end: const FractionalOffset(1.0, 1.0),
@@ -411,7 +412,7 @@ class _LoginPageState extends State<LoginPage>
                 ),
                 child: MaterialButton(
                     highlightColor: Colors.transparent,
-                    splashColor: Theme.Colors.loginGradientEnd,
+                    splashColor: Theme.MYColors.loginGradientEnd,
                     //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -533,20 +534,20 @@ class _LoginPageState extends State<LoginPage>
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   boxShadow: <BoxShadow>[
                     BoxShadow(
-                      color: Theme.Colors.loginGradientStart,
+                      color: Theme.MYColors.loginGradientStart,
                       offset: Offset(1.0, 6.0),
                       blurRadius: 20.0,
                     ),
                     BoxShadow(
-                      color: Theme.Colors.loginGradientEnd,
+                      color: Theme.MYColors.loginGradientEnd,
                       offset: Offset(1.0, 6.0),
                       blurRadius: 20.0,
                     ),
                   ],
                   gradient: new LinearGradient(
                       colors: [
-                        Theme.Colors.loginGradientEnd,
-                        Theme.Colors.loginGradientStart
+                        Theme.MYColors.loginGradientEnd,
+                        Theme.MYColors.loginGradientStart
                       ],
                       begin: const FractionalOffset(0.2, 0.2),
                       end: const FractionalOffset(1.0, 1.0),
@@ -555,7 +556,7 @@ class _LoginPageState extends State<LoginPage>
                 ),
                 child: MaterialButton(
                     highlightColor: Colors.transparent,
-                    splashColor: Theme.Colors.loginGradientEnd,
+                    splashColor: Theme.MYColors.loginGradientEnd,
                     //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -568,8 +569,7 @@ class _LoginPageState extends State<LoginPage>
                             fontFamily: "IRANSans"),
                       ),
                     ),
-                    onPressed: _onSignInButtonPress
-                ),
+                    onPressed: _onSignInButtonPress),
               ),
             ],
           ),
@@ -594,22 +594,31 @@ class _LoginPageState extends State<LoginPage>
   void _onSignInButtonPress() async {
     if (!mobileRegex.hasMatch(loginMobileController.text)) {
       showInSnackBar(
-          'لطفا شماره موبایل خود را به حالت صحیح (با نوشتن صفر وارد نماایید',
-          Colors.lightGreen, 3);
+          'لطفا شماره موبایل خود را به حالت صحیح (با نوشتن صفر وارد نمایید',
+          Colors.lightGreen,
+          3);
+    } else if (loginPasswordController.text == '') {
+      showInSnackBar(
+          'لطفا رمز عبور خود را وارد نمایید',
+          Colors.redAccent,
+          3);
     } else {
+      showLoadingDialog();
       final paramDic = {
         "mobile": loginMobileController.text,
         "password": loginPasswordController.text,
       };
-      final loginData = await http
-          .post(
-          "https://manshourclub.com/API/Customers/Login.php", body: paramDic);
+      final loginData = await http.post(
+          "https://manshourclub.com/API/Customers/Login.php",
+          body: paramDic);
       final response = jsonDecode(loginData.body);
       if (response['status'] == 'login') {
         print('dalam');
       } else {
-        showInSnackBar('شماره موبایل یا رمز عبور وارد شده اشتباه است!', Colors.deepOrange, 4);
+        showInSnackBar('شماره موبایل یا رمز عبور وارد شده اشتباه است!',
+            Colors.deepOrange, 4);
       }
+      hideLoadingDialog();
       _pageController.animateToPage(0,
           duration: Duration(milliseconds: 500), curve: Curves.decelerate);
     }
@@ -617,15 +626,22 @@ class _LoginPageState extends State<LoginPage>
 
   void _onSignUpButtonPress() {
     if (signupPasswordController.text != signupConfirmPasswordController.text) {
-      showInSnackBar('رمز عبور وارد شده با تکرار آن مطابقت ندارد',Colors.red,3);
+      showInSnackBar(
+          'رمز عبور وارد شده با تکرار آن مطابقت ندارد', Colors.red, 3);
       return;
     }
     if (!passwordRegex.hasMatch(signupPasswordController.text)) {
-      showInSnackBar('رمز عبور وارد شده از امنیت کافی برخوردار نیست، رمز عبور شما باید حداقل شامل یک حرف انگلیسی بزرگ، یک حرف انگلیسی کوچک، یک نماد و حداقل 8 رقم باشد.',Colors.amber,7);
+      showInSnackBar(
+          'رمز عبور وارد شده از امنیت کافی برخوردار نیست، رمز عبور شما باید حداقل شامل یک حرف انگلیسی بزرگ، یک حرف انگلیسی کوچک، یک نماد و حداقل 8 رقم باشد.',
+          Colors.amber,
+          7);
       return;
     }
     if (!mobileRegex.hasMatch(signupMobileController.text)) {
-      showInSnackBar('لطفا شماره موبایل خود را به حالت صحیح (با نوشتن صفر وارد نماایید',Colors.lightGreen,3);
+      showInSnackBar(
+          'لطفا شماره موبایل خود را به حالت صحیح (با نوشتن صفر وارد نماایید',
+          Colors.lightGreen,
+          3);
       return;
     }
 
