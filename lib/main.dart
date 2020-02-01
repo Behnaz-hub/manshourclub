@@ -4,14 +4,12 @@ import 'package:manshourclub/cart/cart.dart';
 import 'package:manshourclub/categories/HorizontalList.dart';
 import 'package:manshourclub/categories/Products.dart';
 import 'package:manshourclub/login.dart';
-import 'package:manshourclub/styles/theme.dart' as Theme;
 
 void main() {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Directionality(
-        // add this
+      home: Directionality( // add this
         textDirection: TextDirection.rtl, // set this property
 
         child: MyApp(),
@@ -27,8 +25,9 @@ class MyApp extends StatefulWidget {
   _MyHomeState createState() => new _MyHomeState();
 }
 
-class _MyHomeState extends State<MyApp> {
-  Widget image_carousel = new Container(
+class _MyHomeState extends State<MyApp>{
+
+  Widget image_carousel=new Container(
     height: 225.0,
     child: new Carousel(
       overlayShadow: false,
@@ -45,41 +44,39 @@ class _MyHomeState extends State<MyApp> {
       ],
       animationCurve: Curves.fastOutSlowIn,
       animationDuration: new Duration(microseconds: 1000),
+
     ),
   );
-
   @override
   Widget build(BuildContext context) {
+
     return new Directionality(
       textDirection: TextDirection.rtl,
-      child: new Scaffold(
-        appBar: new AppBar(
-          backgroundColor: Theme.MYColors.loginGradientEnd,
-          title: new Text('منشور'),
-          actions: <Widget>[
-            new IconButton(
-                icon: new Icon(
-                  Icons.search,
-                  color: Colors.white,
-                ),
-                onPressed: null),
-
-            //
-            // for Cart Icon
-            new IconButton(
-                icon: new Icon(
-                  Icons.shopping_cart,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.of(context).push(
-                    new MaterialPageRoute(
-                      builder: (BuildContext context) => new Cart(),
-                    ),
-                  );
-                }),
-          ],
+      child:
+       new Scaffold(
+      appBar: new AppBar(
+      backgroundColor: Colors.deepPurple,
+      title: new Text('منشور'),
+      actions: <Widget>[
+        new IconButton(
+            icon: new Icon(Icons.search,color: Colors.white,),
+            onPressed: null
         ),
+
+        //
+        // for Cart Icon
+        new IconButton(
+            icon: new Icon(Icons.shopping_cart,color: Colors.white,),
+            onPressed: (){
+              Navigator.of(context).push(
+                new MaterialPageRoute(
+                  builder: (BuildContext context)=>new Cart(),
+                ),
+              );
+            }
+        ),
+      ],
+    ),
         drawer: new Drawer(
           child: new ListView(
             children: <Widget>[
@@ -89,85 +86,59 @@ class _MyHomeState extends State<MyApp> {
                 currentAccountPicture: new GestureDetector(
                   child: new CircleAvatar(
                     backgroundColor: Colors.lightBlue,
-                    child: new Icon(
-                      Icons.person,
-                      color: Colors.white,
-                    ),
+                    child: new Icon(Icons.person,color: Colors.white,),
                   ),
                 ),
                 decoration: new BoxDecoration(
-                  color: Theme.MYColors.loginGradientEnd,
+                  color: Colors.deepPurple,
                 ),
               ),
               new InkWell(
-                onTap: () {},
+                onTap: (){},
                 child: new ListTile(
-                  title: new Text('Home',
-                      style: new TextStyle(
-                          color: Theme.MYColors.loginGradientEnd)),
-                  leading: new Icon(
-                    Icons.home,
-                    color: Colors.lightBlue,
-                  ),
+                  title: new Text('Home',style: new TextStyle(color:Colors.deepPurple)),
+                  leading: new Icon(Icons.home,color: Colors.lightBlue,),
                 ),
               ),
               new InkWell(
-                onTap: () {},
+                onTap: (){},
                 child: new ListTile(
                   onTap: () => {
-                    Navigator.of(context).push(new MaterialPageRoute(
-                        builder: (BuildContext context) => new LoginPage()))
+                    Navigator.of(context).push(
+                      new MaterialPageRoute(
+                          builder: (BuildContext context) => new LoginPage()
+                      )
+                    )
                   },
-                  title: new Text('Account',
-                      style: new TextStyle(
-                          color: Theme.MYColors.loginGradientEnd)),
-                  leading: new Icon(
-                    Icons.account_circle,
-                    color: Colors.lightBlue,
-                  ),
+                  title: new Text('Account',style: new TextStyle(color:Colors.deepPurple)),
+                  leading: new Icon(Icons.account_circle,color:Colors.lightBlue ,),
                 ),
               ),
               new InkWell(
-                onTap: () {},
+                onTap: (){},
                 child: new ListTile(
-                  title: new Text('My Orders',
-                      style: new TextStyle(
-                          color: Theme.MYColors.loginGradientEnd)),
-                  leading: new Icon(
-                    Icons.shopping_basket,
-                    color: Colors.lightBlue,
-                  ),
+                  title: new Text('My Orders',style: new TextStyle(color: Colors.deepPurple)),
+                  leading: new Icon(Icons.shopping_basket,color: Colors.lightBlue,),
                 ),
               ),
               new InkWell(
-                onTap: () {},
+                onTap: (){},
                 child: new ListTile(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        new MaterialPageRoute(
-                          builder: (BuildContext context) => new Cart(),
-                        ));
-                  },
-                  title: new Text('Cart',
-                      style: new TextStyle(
-                          color: Theme.MYColors.loginGradientEnd)),
-                  leading: new Icon(
-                    Icons.shopping_cart,
-                    color: Colors.lightBlue,
-                  ),
+                  onTap:(){
+                    Navigator.push(context, new MaterialPageRoute(
+                      builder:(BuildContext context)=>new Cart(),
+                    )
+                    );
+                  } ,
+                  title: new Text('Cart',style: new TextStyle(color:Colors.deepPurple)),
+                  leading: new Icon(Icons.shopping_cart,color: Colors.lightBlue,),
                 ),
               ),
               new InkWell(
-                onTap: () {},
+                onTap: (){},
                 child: new ListTile(
-                  title: new Text('Favourites',
-                      style: new TextStyle(
-                          color: Theme.MYColors.loginGradientEnd)),
-                  leading: new Icon(
-                    Icons.favorite,
-                    color: Colors.lightBlue,
-                  ),
+                  title: new Text('Favourites',style: new TextStyle(color:Colors.deepPurple)),
+                  leading: new Icon(Icons.favorite,color: Colors.lightBlue,),
                 ),
               ),
               new Divider(
@@ -175,29 +146,17 @@ class _MyHomeState extends State<MyApp> {
                 height: 4.0,
               ),
               new InkWell(
-                onTap: () {},
+                onTap: (){},
                 child: new ListTile(
-                  title: new Text('Settings',
-                      style: new TextStyle(
-                          color: Theme.MYColors.loginGradientEnd)),
-                  leading: new Icon(
-                    Icons.settings,
-                    color: Colors.lightBlue,
-                  ),
+                  title: new Text('Settings',style: new TextStyle(color: Colors.deepPurple)),
+                  leading: new Icon(Icons.settings,color: Colors.lightBlue,),
                 ),
               ),
               new InkWell(
-                onTap: () {},
+                onTap: (){},
                 child: new ListTile(
-                  title: new Text(
-                    'Help',
-                    style:
-                        new TextStyle(color: Theme.MYColors.loginGradientEnd),
-                  ),
-                  leading: new Icon(
-                    Icons.help,
-                    color: Colors.lightBlue,
-                  ),
+                  title: new Text('Help',style: new TextStyle(color:Colors.deepPurple),),
+                  leading: new Icon(Icons.help,color: Colors.lightBlue,),
                 ),
               ),
             ],
@@ -205,40 +164,41 @@ class _MyHomeState extends State<MyApp> {
         ),
         body: new ListView(
           children: <Widget>[
-            new SizedBox(
-              height: 5.0,
-            ),
+            new SizedBox(height: 5.0,),
 
             //Image Carousel
             image_carousel,
 
             //padding
             new Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: new Text(
-                'Categories',
-              ),
+              padding:const EdgeInsets.all(8.0),
+              child: new Text('Categories',),
             ),
 
             //Horizontal ListView
-            new HorizontalList(),
+         new Container(
+              height: 400.0,
+              child:  new HorizontalList(),
+            ),
+
 
             //padding
             new Padding(
-              padding: const EdgeInsets.only(top: 18.0, left: 8.0),
-              child: new Text(
-                'Recent Products',
-              ),
+              padding:const EdgeInsets.only(top:18.0,left:8.0),
+              child: new Text('Recent Products',),
             ),
-
-            //making shopping products
+//
+//            //making shopping products
             new Container(
               height: 400.0,
               child: new Products(),
             )
+//
           ],
         ),
       ),
     );
   }
 }
+
+
