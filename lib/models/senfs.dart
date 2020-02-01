@@ -1,6 +1,4 @@
-import 'dart:convert';
 
-import 'package:manshourclub/utils/webservice.dart';
 
 class Senf {
   final String aid;
@@ -34,14 +32,14 @@ class Senf {
         icon: json['icon']);
   }
 
-  static Resource<List<Senf>> get all {
-    return Resource(
-        url: "https://manshourclub.com/API/Loans/AllSenf.php",
-        parse: (response) {
-          final result = json.decode(response.body);
-          Iterable list = result['articles'];
-          print(list);
-          return list.map((model) => Senf.fromJson(model)).toList();
-        });
-  }
+//  static Resource<List<Senf>> get all {
+//    return Resource(
+//        url: "https://manshourclub.com/API/Loans/AllSenf.php",
+//        parse: (response) {
+//          final result = json.decode(response.body);
+//          Iterable list = result['articles'];
+//          print(list);
+//          return list.map((model) => Senf.fromJson(model)).toList();
+//        });
+//  }
 }

@@ -176,20 +176,24 @@ class _MyHomeState extends State<MyApp>{
             ),
 
             //Horizontal ListView
-            new HorizontalList(),
+         new Container(
+              height: 400.0,
+              child:  new HorizontalList(),
+            ),
+
 
             //padding
             new Padding(
               padding:const EdgeInsets.only(top:18.0,left:8.0),
               child: new Text('Recent Products',),
             ),
-
-            //making shopping products
+//
+//            //making shopping products
             new Container(
               height: 400.0,
               child: new Products(),
             )
-
+//
           ],
         ),
       ),

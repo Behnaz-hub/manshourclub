@@ -34,37 +34,6 @@ class _ProductsState extends State<Products> {
       "old_price":"95",
       "price":"50"
     },
-    /*{
-      "name":"Hill",
-      "image":"images/products/hills1.jpeg",
-      "old_price":"120",
-      "price":"180"
-    },
-    {
-      "name":"Pant",
-      "image":"images/products/pants1.jpg",
-      "old_price":"115",
-      "price":"89"
-    },
-    {
-      "name":"Skirt",
-      "image":"images/products/skt1.jpeg",
-      "old_price":"320",
-      "price":"480"
-    },
-    {
-      "name":"Shoe",
-      "image":"images/products/shoe1.jpg",
-      "old_price":"360",
-      "price":"550"
-    },
-    {
-      "name":"Skirt",
-      "image":"images/products/skt2.jpeg",
-      "old_price":"120",
-      "price":"80"
-    }
-    */
 
   ];
 
