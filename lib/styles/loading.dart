@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:manshourclub/styles/theme.dart' as Theme;
 
 class Loading extends StatelessWidget {
   @override
@@ -7,13 +8,14 @@ class Loading extends StatelessWidget {
     return Center(
       child: SizedBox(
           width: 500,
-          height: 10,
+          height: 150,
           child: Column(
             children: <Widget>[
               Container(
-                child: LinearProgressIndicator(
-                  backgroundColor: Colors.transparent,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
+                child: CircularProgressIndicator(
+                  backgroundColor: Theme.MYColors.loginGradientStart,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                      Theme.MYColors.loginGradientEnd),
                 ),
                 color: Colors.transparent,
               ),
