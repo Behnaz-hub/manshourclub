@@ -77,7 +77,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                   child: new Container(
                       height:25.0,
                       color:Colors.white70,
-                      child:new Image.asset(widget.productDetailsImage)
+                      child:new Image.network(widget.productDetailsImage)
                   ),
                 ),
                 footer: new Container(

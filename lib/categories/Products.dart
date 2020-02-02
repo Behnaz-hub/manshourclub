@@ -77,7 +77,7 @@ class SingleProduct extends StatelessWidget {
                           prod_name,
                           style: new TextStyle(
                               fontFamily: 'IRANSans',
-                              fontSize: 10,
+                              fontSize: 14,
                               color: Theme.MYColors.productNameColor),
                         ),
                         title: Row(
@@ -88,7 +88,7 @@ class SingleProduct extends StatelessWidget {
                               style: new TextStyle(
                                   color: Theme.MYColors.priceColor,
                                   fontFamily: 'IRANSans',
-                                  fontSize: 10),
+                                  fontSize: 14),
                             ),
                           ],
                         )),
