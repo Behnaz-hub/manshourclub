@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:load/load.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:manshourclub/styles/theme.dart' as Theme;
 import 'package:manshourclub/pages/indication_painter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -32,7 +34,9 @@ class _LoginPageState extends State<LoginPage>
   bool _obscureTextSignupConfirm = true;
 
   TextEditingController signupMobileController = new TextEditingController();
-  TextEditingController signupNameController = new TextEditingController();
+  TextEditingController signupFNameController = new TextEditingController();
+  TextEditingController signupLNameController = new TextEditingController();
+  TextEditingController _codeController = new TextEditingController();
   RegExp mobileRegex =
       new RegExp(r'^[0][9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$');
   RegExp passwordRegex = new RegExp(
@@ -41,7 +45,8 @@ class _LoginPageState extends State<LoginPage>
   TextEditingController signupPasswordController = new TextEditingController();
   TextEditingController signupConfirmPasswordController =
       new TextEditingController();
-
+  String code;
+  String cid;
   PageController _pageController;
 
   Color left = Colors.black;
@@ -171,7 +176,7 @@ class _LoginPageState extends State<LoginPage>
               child: FlatButton(
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
-                onPressed: _onSignUpButtonPress,
+                onPressed: () => toggleSignUp(1),
                 child: Text(
                   "ثبت نام",
                   style: TextStyle(
@@ -183,7 +188,7 @@ class _LoginPageState extends State<LoginPage>
               child: FlatButton(
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
-                onPressed: _onSignInButtonPress,
+                onPressed: () => toggleSignUp(2),
                 child: Text(
                   "ورود",
                   style: TextStyle(
@@ -223,7 +228,7 @@ class _LoginPageState extends State<LoginPage>
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextField(
                           focusNode: myFocusNodeName,
-                          controller: signupNameController,
+                          controller: signupFNameController,
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.words,
                           style: TextStyle(
@@ -251,8 +256,8 @@ class _LoginPageState extends State<LoginPage>
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextField(
-                          focusNode: myFocusNodeName,
-                          controller: signupNameController,
+//                          focusNode: myFocusNodeName,
+                          controller: signupLNameController,
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.words,
                           style: TextStyle(
@@ -598,10 +603,7 @@ class _LoginPageState extends State<LoginPage>
           Colors.lightGreen,
           3);
     } else if (loginPasswordController.text == '') {
-      showInSnackBar(
-          'لطفا رمز عبور خود را وارد نمایید',
-          Colors.redAccent,
-          3);
+      showInSnackBar('لطفا رمز عبور خود را وارد نمایید', Colors.redAccent, 3);
     } else {
       showLoadingDialog();
       final paramDic = {
@@ -613,7 +615,12 @@ class _LoginPageState extends State<LoginPage>
           body: paramDic);
       final response = jsonDecode(loginData.body);
       if (response['status'] == 'login') {
-        print('dalam');
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('cid', response['customer']['cid']);
+        prefs.setString('name',
+            response['customer']['fname'] + response['customer']['lname']);
+        prefs.setString('name', response['customer']['email']);
+        prefs.setString('mobile', response['customer']['mobile']);
       } else {
         showInSnackBar('شماره موبایل یا رمز عبور وارد شده اشتباه است!',
             Colors.deepOrange, 4);
@@ -624,7 +631,7 @@ class _LoginPageState extends State<LoginPage>
     }
   }
 
-  void _onSignUpButtonPress() {
+  void _onSignUpButtonPress() async {
     if (signupPasswordController.text != signupConfirmPasswordController.text) {
       showInSnackBar(
           'رمز عبور وارد شده با تکرار آن مطابقت ندارد', Colors.red, 3);
@@ -644,7 +651,26 @@ class _LoginPageState extends State<LoginPage>
           3);
       return;
     }
-
+    final paramDic = {
+      "mobile": signupMobileController.text,
+      "fname": signupFNameController.text,
+      "lname": signupLNameController.text,
+      "password": signupPasswordController.text,
+      "type": '1',
+    };
+    final signupData = await http.post(
+        "https://manshourclub.com/API/Customers/Register.php",
+        body: paramDic);
+    final response = jsonDecode(signupData.body);
+    if (response['status'] == 'login') {
+      code = response['code'];
+      _displayDialog(context);
+    } else if (response['status'] == 'login') {
+      showInSnackBar('شماره موبایل وارد شده قبلا در سیستم ثبت شده است!',
+          Colors.deepOrangeAccent, 3);
+    } else {
+      showInSnackBar('خطایی بوجود آمد، دوباره تلاش کنید', Colors.red, 3);
+    }
     _pageController?.animateToPage(1,
         duration: Duration(milliseconds: 500), curve: Curves.decelerate);
   }
@@ -653,6 +679,16 @@ class _LoginPageState extends State<LoginPage>
     setState(() {
       _obscureTextLogin = !_obscureTextLogin;
     });
+  }
+
+  void toggleSignUp(type) {
+    if (type == 1) {
+      _pageController?.animateToPage(1,
+          duration: Duration(milliseconds: 500), curve: Curves.decelerate);
+    } else {
+      _pageController?.animateToPage(0,
+          duration: Duration(milliseconds: 500), curve: Curves.decelerate);
+    }
   }
 
   void _toggleSignup() {
@@ -665,5 +701,65 @@ class _LoginPageState extends State<LoginPage>
     setState(() {
       _obscureTextSignupConfirm = !_obscureTextSignupConfirm;
     });
+  }
+
+  _displayDialog(BuildContext context) async {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.tealAccent,
+            content: new Directionality(
+              textDirection: TextDirection.rtl,
+              child: new TextFormField(
+                controller: _codeController,
+                decoration: new InputDecoration(
+                  focusColor: Colors.redAccent,
+                  labelText: "کد تایید",
+                  labelStyle: TextStyle(fontFamily: 'IRANSans', fontSize: 12.0),
+                  fillColor: Colors.white,
+                  border: new OutlineInputBorder(
+                    borderRadius: new BorderRadius.circular(15.0),
+                    borderSide: new BorderSide(),
+                  ),
+                ),
+                keyboardType: TextInputType.number,
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () async {
+                    if (code == _codeController.text) {
+                      final checkCode = await http.post(
+                          "https://manshourclub.com/API/Customers/Register.php",
+                          body: {'cid': cid, 'type': 2});
+                      if (checkCode.body == '1') {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        prefs.setString('cid', cid);
+                        prefs.setString(
+                            'name',
+                            signupFNameController.text +
+                                " " +
+                                signupLNameController.text);
+                        prefs.setString('mobile', signupMobileController.text);
+                        Navigator.of(context).pop();
+                      } else {
+                        showInSnackBar('فعالسازی با خطا مواجه شد!',
+                            Colors.deepOrangeAccent, 5);
+                      }
+                    } else {
+                      showInSnackBar('کد تایید وارد شده درست نمیباشد!',
+                          Colors.deepOrangeAccent, 5);
+                    }
+                  },
+                  child: Text(
+                    "تایید",
+                    style: TextStyle(fontFamily: 'IRANSans'),
+                  ))
+            ],
+          );
+        });
   }
 }
