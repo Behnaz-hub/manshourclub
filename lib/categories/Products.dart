@@ -3,7 +3,7 @@ import 'package:manshourclub/pages/ProductDetails.dart';
 import 'package:manshourclub/styles/theme.dart' as Theme;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import 'package:manshourclub/styles/constants.dart' as Constants;
 class Products extends StatefulWidget {
   @override
   _ProductsState createState() => new _ProductsState();
@@ -14,7 +14,7 @@ class _ProductsState extends State<Products> {
 
   void _getBestProducts() async {
     final prodResponse = await http
-        .get('https://manshourclub.com/API/Providers/Products/AllProducts.php');
+        .get(Constants.APILINK+"AllProducts.php");
     setState(() {
       product_list = jsonDecode(prodResponse.body);
     });
@@ -32,6 +32,7 @@ class _ProductsState extends State<Products> {
             prod_name: product_list[index]['product_name'],
             prod_image: product_list[index]['pic'],
             prod_price: product_list[index]['price'],
+            prod_details: product_list[index]['details'],
           );
         });
   }
@@ -41,11 +42,13 @@ class SingleProduct extends StatelessWidget {
   final prod_name;
   final prod_image;
   final prod_price;
+  final prod_details;
 
   SingleProduct({
     this.prod_name,
     this.prod_image,
     this.prod_price,
+    this.prod_details,
   });
 
   @override
@@ -66,6 +69,7 @@ class SingleProduct extends StatelessWidget {
                             productDetailsName: prod_name,
                             productDetailsImage: prod_image,
                             productDetailsNewPrice: prod_price,
+                            productDetailsdetails: prod_details,
                           ));
                   Navigator.of(context).push(route);
                 },
@@ -96,8 +100,9 @@ class SingleProduct extends StatelessWidget {
                   child: new Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: new FadeInImage.assetNetwork(
-                          placeholder: 'http://www.miniaccountapp.com/wp-content/uploads/2018/01/Products-And-Services.jpg',
-                          image: 'https://manshourclub.com/admin/images/products/$prod_image'
+                          placeholder: 'images/shop1.jpg',
+                          image:
+                              Constants.productimages+prod_image
                       )
                   ),
                 ),

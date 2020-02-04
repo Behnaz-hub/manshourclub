@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:manshourclub/cart/cart.dart';
 
-class appbar extends StatelessWidget implements PreferredSizeWidget {
+class mainappbar extends StatelessWidget implements PreferredSizeWidget{
+
   final title;
 
-  const appbar({Key key, this.title}) : super(key: key);
-
+  const mainappbar({Key key, this.title}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return AppBar(
-      backgroundColor: Colors.deepPurple,
+    return   AppBar(
+      backgroundColor: Colors.green[800],
       title: new Text(title),
       actions: <Widget>[
+        new IconButton(
+            icon: new Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
+            onPressed: null),
+
+        //
+        // for Cart Icon
         new IconButton(
             icon: new Icon(
               Icons.shopping_cart,
@@ -24,19 +33,8 @@ class appbar extends StatelessWidget implements PreferredSizeWidget {
                   builder: (BuildContext context) => new Cart(),
                 ),
               );
+
             }),
-        new Directionality(textDirection: TextDirection.ltr,
-            child: IconButton(
-
-                icon: new Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                }),
-        )
-
-        //
-        // for Cart Icon
-
       ],
     );
   }

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:flutter/services.dart';
 import 'package:manshourclub/cart/cart.dart';
 import 'package:manshourclub/categories/HorizontalList.dart';
 import 'package:manshourclub/categories/Products.dart';
-import 'package:manshourclub/login.dart';
 import 'package:load/load.dart';
 import 'package:manshourclub/styles/loading.dart';
-import 'package:manshourclub/utils/appbarfunc.dart';
+import 'package:manshourclub/utils/mainappbar.dart';
 import 'package:manshourclub/utils/sideDrawer.dart';
 
 void main() {
+
   runApp(
     LoadingProvider(
       child: MaterialApp(
@@ -58,10 +59,15 @@ class _MyHomeState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return new Directionality(
       textDirection: TextDirection.rtl,
       child: new Scaffold(
-        appBar: new appbar(title: "",),
+        appBar: new mainappbar(title: "منشور",),
         drawer: new SideDrawer(),
         body: new ListView(
           children: <Widget>[
@@ -98,7 +104,8 @@ class _MyHomeState extends State<MyApp> {
 //
 //            //making shopping products
             new Container(
-              height: 400.0,
+              padding: const EdgeInsets.only(top: 5 ,bottom: 15, ),
+              height: MediaQuery.of(context).size.height*0.50,
               child: new Products(),
             )
 //

@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:manshourclub/cart/cart.dart';
 import 'package:manshourclub/models/providers.dart';
 import 'package:manshourclub/styles/loading.dart';
 import 'package:manshourclub/styles/theme.dart' as theme;
@@ -11,6 +10,7 @@ import 'package:manshourclub/utils/appbarfunc.dart';
 import 'package:manshourclub/utils/sideDrawer.dart';
 import 'package:manshourclub/utils/toast_utils.dart';
 import 'Products.dart';
+import 'package:manshourclub/styles/constants.dart' as Constants;
 
 class Providers extends StatefulWidget {
   final aid;
@@ -48,7 +48,7 @@ class prov extends State<Providers> {
                   print(data[index].pid);
 
                   final prodResponse = await http
-                      .post('https://manshourclub.com/API/Providers/Products/GetPoductByProvider.php', body: {'pid': data[index].pid});
+                      .post('${Constants.APILINK}GetPoductByProvider.php', body: {'pid': data[index].pid});
                   setState(() {
                     product_list = jsonDecode(prodResponse.body);
                   }
@@ -59,21 +59,24 @@ class prov extends State<Providers> {
                         itemCount: product_list.length,
                         gridDelegate:
                         new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+
                         itemBuilder: (BuildContext context, int index) {
+
                           return new SingleProduct(
                             prod_name: product_list[index]['product_name'],
                             prod_image: product_list[index]['pic'],
                             prod_price: product_list[index]['price'],
+                            prod_details: product_list[index]['details'],
                           );
-                        });
+                        }
+                        );
                   else
                     ToastUtils.showCustomToast(context, "برای این فروشگاه محصولی ثبت نشده است");
 
                 },
                 child: Column(children: [
                   Image.network(
-                    'http://manshourclub.com/admin/images/providers/' +
-                        data[index].pic,
+                   Constants.providersimage+data[index].pic,
                     width: 60,
                     height: 60,
                   ),
@@ -85,7 +88,8 @@ class prov extends State<Providers> {
                     minFontSize: 10,
                   )
                 ]),
-              ));
+              )
+          );
         });
   }
 
@@ -150,8 +154,10 @@ class prov extends State<Providers> {
                       prod_name: product_list[index]['product_name'],
                       prod_image: product_list[index]['pic'],
                       prod_price: product_list[index]['price'],
+                      prod_details: product_list[index]['details'],
                     );
-                  }),
+                  }
+                  ),
             )
 //
           ],
@@ -163,7 +169,7 @@ class prov extends State<Providers> {
 }
 
 Future<List<providers>> fetchasnaf(id) async {
-  final ListAPIUrl = 'https://manshourclub.com/API/Providers/AllProviders.php';
+  final ListAPIUrl = '${Constants.providersapi}AllProviders.php';
   final response = await http.post(ListAPIUrl, body: {'senf_id': id});
 
   if (response.statusCode == 200) {
