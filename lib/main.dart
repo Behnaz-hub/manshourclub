@@ -104,8 +104,9 @@ class _MyHomeState extends State<MyApp> {
 //
 //            //making shopping products
             new Container(
-              padding: const EdgeInsets.only(top: 5 ,bottom: 15, ),
-              height: MediaQuery.of(context).size.height*0.50,
+              padding: const EdgeInsets.only(top: 5 ,bottom: 5, ),
+              margin: const EdgeInsets.only(bottom: 5),
+              height: MediaQuery.of(context).size.height*0.40,
               child: new Products(),
             )
 //

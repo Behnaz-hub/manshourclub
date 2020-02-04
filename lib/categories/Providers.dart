@@ -29,76 +29,77 @@ class Providers extends StatefulWidget {
 class prov extends State<Providers> {
   List<providers> asnaf;
   var product_list = [];
+
   @override
   ListView providerlistview(data) {
     return ListView.builder(
         itemCount: asnaf.length,
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          return Container(
-              height: 100,
-              width: 120,
-              decoration: BoxDecoration(
-                  border: Border.all(color: theme.MYColors.productBackGround),
-                  borderRadius: BorderRadius.all(Radius.circular(8.0))),
-              padding: const EdgeInsets.all(8.0),
-              margin: const EdgeInsets.all(2.0),
-              child: GestureDetector(
-                onTap: () async {
-                  print(data[index].pid);
+          return Hero(
+            tag: "",
+            child: Container(
+                width: MediaQuery.of(context).size.width * .25,
+                decoration: BoxDecoration(
+                    border: Border.all(color: theme.MYColors.productBackGround),
+                    borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                padding: const EdgeInsets.all(8.0),
+                margin: const EdgeInsets.all(2.0),
+                child: GestureDetector(
+                  onTap: () async {
+                    print(data[index].pid);
 
-                  final prodResponse = await http
-                      .post('${Constants.APILINK}GetPoductByProvider.php', body: {'pid': data[index].pid});
-                  setState(() {
-                    product_list = jsonDecode(prodResponse.body);
-                  }
-                  );
-                  print(product_list.length);
-                  if(product_list.length >0 )
-                    new GridView.builder(
-                        itemCount: product_list.length,
-                        gridDelegate:
-                        new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-
-                        itemBuilder: (BuildContext context, int index) {
-
-                          return new SingleProduct(
-                            prod_name: product_list[index]['product_name'],
-                            prod_image: product_list[index]['pic'],
-                            prod_price: product_list[index]['price'],
-                            prod_details: product_list[index]['details'],
-                          );
-                        }
-                        );
-                  else
-                    ToastUtils.showCustomToast(context, "برای این فروشگاه محصولی ثبت نشده است");
-
-                },
-                child: Column(children: [
-                  Image.network(
-                   Constants.providersimage+data[index].pic,
-                    width: 60,
-                    height: 60,
-                  ),
-                  AutoSizeText(
-                    data[index].name,
-                    style: TextStyle(fontSize: 16, fontFamily: 'IRASans'),
-                    maxLines: 1,
-                    maxFontSize: 16,
-                    minFontSize: 10,
-                  )
-                ]),
-              )
+                    final prodResponse = await http.post(
+                        '${Constants.APILINK}GetPoductByProvider.php',
+                        body: {'pid': data[index].pid});
+                    setState(() {
+                      product_list = jsonDecode(prodResponse.body);
+                    });
+                    print(product_list.length);
+                    if (product_list.length > 0)
+                      new GridView.builder(
+                          itemCount: product_list.length,
+                          gridDelegate:
+                              new SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2),
+                          itemBuilder: (BuildContext context, int index) {
+                            return new SingleProduct(
+                              prod_name: product_list[index]['product_name'],
+                              prod_image: product_list[index]['pic'],
+                              prod_price: product_list[index]['price'],
+                              prod_details: product_list[index]['details'],
+                            );
+                          });
+                    else
+                      ToastUtils.showCustomToast(
+                          context, "برای این فروشگاه محصولی ثبت نشده است");
+                  },
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Image.network(
+                          Constants.providersimage + data[index].pic,
+                        ),
+                        AutoSizeText(
+                          data[index].name,
+                          style: TextStyle(fontSize: 16, fontFamily: 'IRASans'),
+                          maxLines: 1,
+                          maxFontSize: 16,
+                          minFontSize: 10,
+                        )
+                      ]),
+                )),
           );
         });
   }
-
 
   Widget build(BuildContext context) {
     return new Directionality(
       textDirection: TextDirection.rtl,
       child: new Scaffold(
-        appBar: new appbar(title: "",),
+        appBar: new appbar(
+          title: "",
+        ),
         drawer: new SideDrawer(),
         body: new ListView(
           children: <Widget>[
@@ -110,14 +111,16 @@ class prov extends State<Providers> {
               padding: const EdgeInsets.all(8.0),
               child: new Text(
                 'فروشگاه ها ',
-                style: TextStyle(fontFamily: 'IRANSans', fontSize: 18 , color: theme.MYColors.priceColor),
+                style: TextStyle(
+                    fontFamily: 'IRANSans',
+                    fontSize: 18,
+                    color: theme.MYColors.priceColor),
               ),
             ),
 
             //Horizontal ListView
             new Container(
               height: 120.0,
-
               child: FutureBuilder<List<providers>>(
                 future: fetchasnaf(widget.aid),
                 builder: (context, snapshot) {
@@ -131,8 +134,12 @@ class prov extends State<Providers> {
                 },
               ),
             ),
-            new Container(height: 2, width: 1, color: Colors.grey,
-              margin: const EdgeInsets.only(left: 10.0, right: 10.0),),
+            new Container(
+              height: 2,
+              width: 1,
+              color: Colors.grey,
+              margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+            ),
             //padding
             new Padding(
               padding: const EdgeInsets.only(top: 18.0, left: 8.0),
@@ -144,11 +151,11 @@ class prov extends State<Providers> {
 //
 //            //making shopping products
             new Container(
-              height:400.0,
+              height: 400.0,
               child: new GridView.builder(
                   itemCount: product_list.length,
-                  gridDelegate:
-                  new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                  gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2),
                   itemBuilder: (BuildContext context, int index) {
                     return new SingleProduct(
                       prod_name: product_list[index]['product_name'],
@@ -156,15 +163,13 @@ class prov extends State<Providers> {
                       prod_price: product_list[index]['price'],
                       prod_details: product_list[index]['details'],
                     );
-                  }
-                  ),
+                  }),
             )
 //
           ],
         ),
       ),
     );
-
   }
 }
 

@@ -4,6 +4,7 @@ import 'package:manshourclub/styles/theme.dart' as Theme;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:manshourclub/styles/constants.dart' as Constants;
+
 class Products extends StatefulWidget {
   @override
   _ProductsState createState() => new _ProductsState();
@@ -13,8 +14,7 @@ class _ProductsState extends State<Products> {
   var product_list = [];
 
   void _getBestProducts() async {
-    final prodResponse = await http
-        .get(Constants.APILINK+"AllProducts.php");
+    final prodResponse = await http.get(Constants.APILINK + "AllProducts.php");
     setState(() {
       product_list = jsonDecode(prodResponse.body);
     });
@@ -54,7 +54,7 @@ class SingleProduct extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Padding(
-      padding: const EdgeInsets.only(left: 8.0, top: 8.0, right: 4.0),
+      padding: const EdgeInsets.only(left: 4.0, top: 8.0, right: 4.0),
       child: new Card(
         elevation: 6.0,
         color: Colors.cyanAccent,
@@ -101,10 +101,7 @@ class SingleProduct extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: new FadeInImage.assetNetwork(
                           placeholder: 'images/shop1.jpg',
-                          image:
-                              Constants.productimages+prod_image
-                      )
-                  ),
+                          image: Constants.productimages + prod_image)),
                 ),
               ),
             )),
