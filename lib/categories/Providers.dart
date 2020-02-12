@@ -37,7 +37,7 @@ class prov extends State<Providers> {
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           return Hero(
-            tag: "",
+            tag: asnaf[index],
             child: Container(
                 width: MediaQuery.of(context).size.width * .25,
                 decoration: BoxDecoration(
@@ -68,6 +68,7 @@ class prov extends State<Providers> {
                               prod_image: product_list[index]['pic'],
                               prod_price: product_list[index]['price'],
                               prod_details: product_list[index]['details'],
+                              prod_id: product_list[index]['product_id'],
                             );
                           });
                     else
@@ -99,6 +100,7 @@ class prov extends State<Providers> {
       child: new Scaffold(
         appBar: new appbar(
           title: "",
+            totalProduct:0,
         ),
         drawer: new SideDrawer(),
         body: new ListView(
@@ -162,6 +164,7 @@ class prov extends State<Providers> {
                       prod_image: product_list[index]['pic'],
                       prod_price: product_list[index]['price'],
                       prod_details: product_list[index]['details'],
+                      prod_id: product_list[index]['product_id'],
                     );
                   }),
             )

@@ -33,8 +33,12 @@ class _ProductsState extends State<Products> {
             prod_image: product_list[index]['pic'],
             prod_price: product_list[index]['price'],
             prod_details: product_list[index]['details'],
+            prod_id: product_list[index]['product_id'],
+
           );
-        });
+
+        }
+        );
   }
 }
 
@@ -43,12 +47,14 @@ class SingleProduct extends StatelessWidget {
   final prod_image;
   final prod_price;
   final prod_details;
+  final prod_id;
 
   SingleProduct({
     this.prod_name,
     this.prod_image,
     this.prod_price,
     this.prod_details,
+    this.prod_id,
   });
 
   @override
@@ -70,6 +76,7 @@ class SingleProduct extends StatelessWidget {
                             productDetailsImage: prod_image,
                             productDetailsNewPrice: prod_price,
                             productDetailsdetails: prod_details,
+                            productId: prod_id,
                           ));
                   Navigator.of(context).push(route);
                 },
@@ -104,7 +111,8 @@ class SingleProduct extends StatelessWidget {
                           image: Constants.productimages + prod_image)),
                 ),
               ),
-            )),
+            )
+        ),
       ),
     );
   }

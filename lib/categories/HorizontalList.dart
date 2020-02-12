@@ -6,7 +6,7 @@ import 'package:manshourclub/models/senfs.dart';
 import 'package:http/http.dart' as http;
 import 'package:manshourclub/styles/loading.dart';
 import 'package:manshourclub/styles/theme.dart' as theme;
-
+import 'package:manshourclub/styles/constants.dart' as Constants;
 import 'Providers.dart';
 
 
@@ -41,7 +41,7 @@ class HorizontalList extends StatelessWidget {
             Container(
 
                 height: 100,
-                width: 100,
+                width: MediaQuery.of(context).size.width*.24,
                 decoration: BoxDecoration(
                     border: Border.all(color: theme.MYColors.productBackGround),
                     borderRadius: BorderRadius.all(Radius.circular(8.0))
@@ -51,7 +51,7 @@ class HorizontalList extends StatelessWidget {
                 margin: const EdgeInsets.all(2.0),
                 child: GestureDetector(
                   onTap: (){
-                    print(data[index].name);
+                    print(ListView);
                     var route = new MaterialPageRoute(
                         builder: (BuildContext context) => new Providers(
                             aid  :data[index].aid
@@ -61,9 +61,10 @@ class HorizontalList extends StatelessWidget {
                   },
                   child:  Column(
 
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children:[
                         Image.network(
-                          'http://manshourclub.com/admin/images/asnaf/icons/'+data[index].icon,
+                          Constants.asnaficon+data[index].icon,
                           width: 50,
                           height: 50,
                         ),
@@ -91,7 +92,7 @@ class HorizontalList extends StatelessWidget {
 
 Future<List<Senf>> fetchasnaf() async {
 
-  final ListAPIUrl = 'https://manshourclub.com/API/Loans/AllSenf.php';
+  final ListAPIUrl = '${Constants.asnafapi}AllSenf.php';
   final response = await http.get(ListAPIUrl);
 
   if (response.statusCode == 200) {
