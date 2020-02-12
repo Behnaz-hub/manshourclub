@@ -38,13 +38,13 @@ class _LoginPageState extends State<LoginPage>
   TextEditingController signupLNameController = new TextEditingController();
   TextEditingController _codeController = new TextEditingController();
   RegExp mobileRegex =
-  new RegExp(r'^[0][9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$');
+      new RegExp(r'^[0][9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$');
   RegExp passwordRegex = new RegExp(
       r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$');
 
   TextEditingController signupPasswordController = new TextEditingController();
   TextEditingController signupConfirmPasswordController =
-  new TextEditingController();
+      new TextEditingController();
   String code;
   String cid;
   PageController _pageController;
@@ -736,7 +736,7 @@ class _LoginPageState extends State<LoginPage>
                           body: {'cid': cid, 'type': 2});
                       if (checkCode.body == '1') {
                         SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
+                            await SharedPreferences.getInstance();
                         prefs.setString('cid', cid);
                         prefs.setString(
                             'name',
