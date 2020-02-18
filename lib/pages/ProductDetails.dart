@@ -10,9 +10,12 @@ import 'package:manshourclub/styles/theme.dart';
 import 'package:manshourclub/styles/constants.dart' as Constants;
 import 'package:manshourclub/styles/theme.dart' as theme;
 import 'package:html/parser.dart';
+import 'package:persian_numbers/persian_numbers.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../main.dart';
 
 
 class ProductDetails extends StatelessWidget {
@@ -76,7 +79,8 @@ class _ProductDetailsState extends State<_ProductDetail> {
   int totalProduct = 0 ;
   var shopcartlist = {};
   int shopingamount;
-
+  int fullprice = 0;
+  String TAG="ProductDetails";
   String _parseHtmlString(String htmlString) {
 
     var document = parse(htmlString);
@@ -98,13 +102,23 @@ class _ProductDetailsState extends State<_ProductDetail> {
         body: param);
 
     final response = jsonDecode(cartData.body);
-
+    print(TAG + ":response: " + response.toString());
     totalProduct = response['full_count'];
-
-
+    print(TAG + ":totalProduct: " + totalProduct.toString());
     shopcartlist = jsonDecode(cartData.body);
     shopingamount = shopcartlist.length;
+    for(int i = 0; i<(shopingamount -1 ) ; i++){
+    fullprice += int.parse(response[i.toString()]['product_datails']['price'])*
+                  int.parse(response[i.toString()]['count']);
 
+    }
+
+  }
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    gevaluet();
   }
 
   @override
@@ -112,7 +126,7 @@ class _ProductDetailsState extends State<_ProductDetail> {
 
     var provider = Provider.of<MyCart>(context);
 
-    gevaluet();
+
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
       home:Directionality(
@@ -121,7 +135,7 @@ class _ProductDetailsState extends State<_ProductDetail> {
 
         child:new Scaffold(
           appBar:  new AppBar(
-            backgroundColor: Colors.deepPurple,
+            backgroundColor: theme.MYColors.darkblue,
             title: new Text(""),
             actions: <Widget>[
               new Padding(
@@ -133,6 +147,7 @@ class _ProductDetailsState extends State<_ProductDetail> {
 
                             usershopcart: shopcartlist,
                             shopingamount: shopingamount,
+                            fullprice: fullprice,
                           ));
                       Navigator.of(context).push(route);
                     },
@@ -149,6 +164,7 @@ class _ProductDetailsState extends State<_ProductDetail> {
 
                                     usershopcart: shopcartlist,
                                     shopingamount: shopingamount,
+                                    fullprice: fullprice,
                                   ));
                               Navigator.of(context).push(route);
                             }
@@ -158,14 +174,14 @@ class _ProductDetailsState extends State<_ProductDetail> {
                               children: <Widget>[
                                 new Icon(Icons.brightness_1,
                                 size: 25 ,
-                                    color: theme.MYColors.priceColor,),
+                                    color: theme.MYColors.red,),
                                 new Positioned(
-                                    top:3 ,
-                                    right:5 ,
+                                    top:0 ,
+                                    right:7 ,
                                     child: new Center(
                                         child: new Text(
-                                          '$totalProduct',
-                                          style: CustomTextStyle.whitettxt(context),
+                                          PersianNumbers.toPersian(totalProduct.toString()),
+                                          style: CustomTextStyle.whitenumbers(context),
                                         ),
                                     )
                                 ),
@@ -179,12 +195,15 @@ class _ProductDetailsState extends State<_ProductDetail> {
               ),
 
               new Directionality(textDirection: TextDirection.ltr,
-                child: IconButton(
-
-                    icon: new Icon(Icons.arrow_back),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    }),
+                child: BackButton(
+                  color: Colors.white,
+                  onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyApp()),
+                    );
+                  },
+                    ),
               )
 
               //
@@ -192,184 +211,171 @@ class _ProductDetailsState extends State<_ProductDetail> {
 
             ],
           ),
-          body: new ListView(
-            children: <Widget>[
+          body: new Container(
+            padding: EdgeInsets.all(5),
+            margin: EdgeInsets.all(5),
+            decoration: BoxDecoration(color: Colors.grey[300] , border: Border.all(color: Colors.grey,width: 2)),
+            child: new ListView(
+              children: <Widget>[
 
-              // Setting the image and details of the product
-              new Container(
-                height:300.0,
-                child: new GridTile(
-                  child:new Padding(
-                    padding: const EdgeInsets.only(left:16.0),
-                    child: new Container(
-                        height:25.0,
-                        color:Colors.white70,
-                        margin: EdgeInsets.only(top: 5 ,left: 10 , right: 10),
-                        child:new Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
+                // Setting the image and details of the product
+                new Container(
+                  height:300.0,
+                  child: new GridTile(
+                    child:new Padding(
+                      padding: const EdgeInsets.only(left:16.0),
+                      child: new Container(
+                          height:25.0,
+                          color:Colors.transparent,
+                          margin: EdgeInsets.only(top: 5 ,left: 10 , right: 10),
+                          child:new Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
 
-                            Image.network( Constants.productimages + widget.productDetailsImage),
-                            new Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                new Text(
-                                      widget.productDetailsName,
-                                      style: CustomTextStyle.drawertext(context),
-                                ),
-
-                               new Text(
-                                    widget.productDetailsNewPrice,
+                              Image.network( Constants.productimages + widget.productDetailsImage),
+                              new Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  new Text(
+                                    widget.productDetailsName,
                                     style: CustomTextStyle.drawertext(context),
+                                  ),
+
+                                  new Text(
+                                    PersianNumbers.toPersian(widget.productDetailsNewPrice),
+                                    style: CustomTextStyle.numbers(context),
 
                                   ),
 
-                              ],
-                            ),
-                          ],
-                        )
+                                ],
+                              ),
+                            ],
+                          )
+                      ),
                     ),
-                  ),
 
+                  ),
                 ),
-              ),
 
 
-              //
-              new Row(
-                children: <Widget>[
-                  new Expanded(
-                    child:new MaterialButton(
-                      child: new Row(
-                        children: <Widget>[
-                          new Expanded(
-                              child:new Text('Size')
-                          ),
-                          new Expanded(
-                            child:new Icon(Icons.keyboard_arrow_down),
-                          ),
-                        ],
-                      ),
-                      color:Colors.white,
-                      textColor: Colors.grey,
-                      onPressed:(){},
-                    ),
-                  ),
+                //
+//              new Row(
+//                children: <Widget>[
+//                  new Expanded(
+//                    child:new MaterialButton(
+//                      child: new Row(
+//                        children: <Widget>[
+//                          new Expanded(
+//                              child:new Text('Size')
+//                          ),
+//                          new Expanded(
+//                            child:new Icon(Icons.keyboard_arrow_down),
+//                          ),
+//                        ],
+//                      ),
+//                      color:Colors.white,
+//                      textColor: Colors.grey,
+//                      onPressed:(){},
+//                    ),
+//                  ),
+//
+//                  //for color button
+//                  new Expanded(
+//                    child:new MaterialButton(
+//                      child: new Row(
+//                        children: <Widget>[
+//                          new Expanded(
+//                              child:new Text('Color')
+//                          ),
+//                          new Expanded(
+//                            child:new Icon(Icons.keyboard_arrow_down),
+//                          ),
+//                        ],
+//                      ),
+//                      color:Colors.white,
+//                      textColor: Colors.grey,
+//                      onPressed:(){},
+//                    ),
+//                  ),
+//
+//                  new Expanded(
+//                    child:new MaterialButton(
+//                      child: new Row(
+//                        children: <Widget>[
+//                          new Expanded(
+//                              child:new Text('Qty')
+//                          ),
+//                          new Expanded(
+//                            child:new Icon(Icons.keyboard_arrow_down),
+//                          ),
+//                        ],
+//                      ),
+//                      color:Colors.white,
+//                      textColor: Colors.grey,
+//                      onPressed:(){},
+//                    ),
+//                  ),
+//                ],
+//              ),
 
-                  //for color button
-                  new Expanded(
-                    child:new MaterialButton(
-                      child: new Row(
-                        children: <Widget>[
-                          new Expanded(
-                              child:new Text('Color')
-                          ),
-                          new Expanded(
-                            child:new Icon(Icons.keyboard_arrow_down),
-                          ),
-                        ],
-                      ),
-                      color:Colors.white,
-                      textColor: Colors.grey,
-                      onPressed:(){},
-                    ),
-                  ),
-
-                  new Expanded(
-                    child:new MaterialButton(
-                      child: new Row(
-                        children: <Widget>[
-                          new Expanded(
-                              child:new Text('Qty')
-                          ),
-                          new Expanded(
-                            child:new Icon(Icons.keyboard_arrow_down),
-                          ),
-                        ],
-                      ),
-                      color:Colors.white,
-                      textColor: Colors.grey,
-                      onPressed:(){},
-                    ),
-                  ),
-                ],
-              ),
-
-              new Padding(
-                padding: const EdgeInsets.only(left:64.0,right: 64.0,top: 16.0),
-                child: new Row(
-                  children: <Widget>[
-                    new Expanded(
-                      child: new MaterialButton(
+                new Padding(
+                  padding: const EdgeInsets.only(left:64.0,right: 64.0,top: 16.0),
+                  child: new Row(
+                    children: <Widget>[
+                      new Expanded(
+                        child: new MaterialButton(
                           child: new Text("خرید", style: CustomTextStyle.whitettxt(context),),
-                          color: Colors.deepPurple,
+                          color:theme.MYColors.green,
                           textColor: Colors.white,
-                          onPressed: () async {
+                          onPressed: (){
                             provider.addToCart(int.parse(widget.productId));
-                            totalProduct += 1;
-                            showLoadingDialog();
-                            SharedPreferences prefs = await SharedPreferences.getInstance();
-                            final cid = prefs.getString('cid') ?? "1";
-                            final param = {
-                              "product_id":widget.productId,
-                              "cid":cid,
-                              "type":"add",
-                            };
-                            final cartData = await http.post(
-                                "${Constants.APILINK}ShopCart.php",
-                                body: param);
-
-                            final response = jsonDecode(cartData.body);
-
-                            if (response['status'] == 'success') {
-                              print('yes added!');
-                            } else {
-                              print('محصول اضافه نشد');
-                            }
-                            hideLoadingDialog();
+                            setState(() {
+                              totalProduct ;
+                            });
                           },
+                        ),
                       ),
-                    ),
-                    new IconButton(
-                        color: Colors.deepPurple,
-                        icon:new Icon(Icons.add_shopping_cart),
-                        onPressed: (){
+                      new IconButton(
+                          color: Colors.deepPurple,
+                          icon:new Icon(Icons.add_shopping_cart),
+                          onPressed: (){
 
-                        }
-                    ),
-                    new IconButton(
-                        color: Colors.deepPurple,
-                        icon:new Icon(Icons.favorite_border),
-                        onPressed: (){}
-                    ),
-                  ],
+                          }
+                      ),
+                      new IconButton(
+                          color: Colors.deepPurple,
+                          icon:new Icon(Icons.favorite_border),
+                          onPressed: (){}
+                      ),
+                    ],
+                  ),
                 ),
-              ),
 
-              //""""""""""""""""""""""""""
-              //
-              // """"""""""""""""""""""""""""
-              new Padding(
-                padding: const EdgeInsets.only(left:16.0,top: 8.0),
-                child: new Text(
-                  'توضیحات:',
-                  style: CustomTextStyle.drawertext(context),
+                //""""""""""""""""""""""""""
+                //
+                // """"""""""""""""""""""""""""
+                new Padding(
+                  padding: const EdgeInsets.only(left:16.0,top: 8.0),
+                  child: new Text(
+                    'توضیحات:',
+                    style: CustomTextStyle.drawertext(context),
+                  ),
                 ),
-              ),
 
-              new Padding(
-                padding: const EdgeInsets.only(left:16.0,top: 8.0),
+                new Padding(
+                  padding: const EdgeInsets.only(left:16.0,top: 8.0),
 
-                child: Html(
+                  child: Html(
 //                    widget.productDetailsdetails
-                  data:
-                  _parseHtmlString(widget.productDetailsdetails),
-                  padding: EdgeInsets.all(8.0),
+                    data:
+                    _parseHtmlString(widget.productDetailsdetails),
+                    padding: EdgeInsets.all(8.0),
 
+                  ),
                 ),
-              ),
 
-            ],
+              ],
+            ),
           ),
         ),
       )

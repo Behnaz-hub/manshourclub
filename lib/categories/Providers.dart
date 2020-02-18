@@ -2,20 +2,57 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:manshourclub/cart/cart.dart';
+import 'package:manshourclub/cart/my_cart.dart';
 import 'package:manshourclub/models/providers.dart';
 import 'package:manshourclub/styles/loading.dart';
 import 'package:manshourclub/styles/theme.dart' as theme;
 import 'package:http/http.dart' as http;
+import 'package:manshourclub/styles/theme.dart';
 import 'package:manshourclub/utils/appbarfunc.dart';
 import 'package:manshourclub/utils/sideDrawer.dart';
 import 'package:manshourclub/utils/toast_utils.dart';
+import 'package:persian_numbers/persian_numbers.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../main.dart';
 import 'Products.dart';
 import 'package:manshourclub/styles/constants.dart' as Constants;
 
-class Providers extends StatefulWidget {
+
+class Providers extends StatelessWidget {
+
   final aid;
 
-  Providers({this.aid});
+
+  Providers({
+    Key key,
+    this.aid,
+   }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return ChangeNotifierProvider<MyCart>(
+      create: (context) => MyCart(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: "kl",
+        home: _Providers(
+          aid: aid,
+
+        ),
+      ),
+    );
+  }
+
+}
+
+
+class _Providers extends StatefulWidget {
+  final aid;
+
+  _Providers({this.aid});
 
   @override
   State<StatefulWidget> createState() {
@@ -26,10 +63,49 @@ class Providers extends StatefulWidget {
   }
 }
 
-class prov extends State<Providers> {
+class prov extends State<_Providers> {
   List<providers> asnaf;
   var product_list = [];
+  var amont = 0;
+  int totalProduct = 0 ;
+  var shopcartlist = {};
+  String TAG ="appbar";
 
+  int shopingamount;
+  int fullprice = 0;
+  gevaluet() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final cid = prefs.getString('cid') ?? "1";
+    var totalProduct;
+    final param = {
+      "cid":cid,
+    };
+    final cartData = await http.post(
+        "${Constants.APILINK}ShopCart.php",
+        body: param);
+
+    final response = jsonDecode(cartData.body);
+    totalProduct = response['full_count'];
+    shopcartlist = jsonDecode(cartData.body);
+    shopingamount = shopcartlist.length;
+
+    for(int i = 0; i<(shopingamount -1 ) ; i++){
+      fullprice = fullprice + int.parse(response[i.toString()]['product_datails']['price'])*
+          int.parse(response[i.toString()]['count']);
+    }
+    setState(() {
+      gevaluet();
+      totalProduct = response['full_count'];
+      amont =totalProduct ;
+    });
+
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    gevaluet();
+  }
   @override
   ListView providerlistview(data) {
     return ListView.builder(
@@ -95,12 +171,70 @@ class prov extends State<Providers> {
   }
 
   Widget build(BuildContext context) {
+
     return new Directionality(
       textDirection: TextDirection.rtl,
       child: new Scaffold(
-        appBar: new appbar(
-          title: "",
-            totalProduct:0,
+        appBar: AppBar(
+          backgroundColor: theme.MYColors.darkblue,
+          title: null,
+          actions: <Widget>[
+            new Stack(
+              children: <Widget>[
+                new IconButton(
+                  icon: new Icon(
+                    Icons.shopping_cart,
+                    color: Colors.white,
+                  ),
+                  onPressed: (){
+                    var route = new MaterialPageRoute(
+                        builder: (BuildContext context) => new Cart(
+                          usershopcart: shopcartlist,
+                          shopingamount: shopingamount,
+                          fullprice:fullprice,
+                        )
+                    );
+                    Navigator.of(context).push(route);
+                  },
+                ),
+                new Positioned(
+                    child: new Stack(
+                      children: <Widget>[
+                        new Icon(Icons.brightness_1,
+                          size: 25 ,
+                          color: theme.MYColors.red,
+                        ),
+                        new Positioned(
+                            top:0 ,
+                            right:5 ,
+                            child: new Center(
+                              child: new Text(
+                                PersianNumbers.toPersian(amont.toString()),
+                                style: CustomTextStyle.whitenumbers(context),
+                              ),
+                            )
+                        ),
+                      ],
+                    )
+                ),
+              ],
+            ),
+            new Directionality(textDirection: TextDirection.ltr,
+              child: IconButton(
+
+                  icon: new Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyApp()),
+                    );
+                  }),
+            )
+
+            //
+            // for Cart Icon
+
+          ],
         ),
         drawer: new SideDrawer(),
         body: new ListView(

@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/services.dart';
-import 'package:manshourclub/cart/cart.dart';
+import 'package:manshourclub/cart/my_cart.dart';
 import 'package:manshourclub/categories/HorizontalList.dart';
 import 'package:manshourclub/categories/Products.dart';
 import 'package:load/load.dart';
 import 'package:manshourclub/styles/loading.dart';
 import 'package:manshourclub/utils/mainappbar.dart';
 import 'package:manshourclub/utils/sideDrawer.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'login.dart';
 
 void main() {
 
-  runApp(
+    runApp(
     LoadingProvider(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -19,24 +23,89 @@ void main() {
           // add this
           textDirection: TextDirection.rtl, // set this property
 
-          child: MyApp(),
+          child: SplashScreen(),
         ),
+        routes: <String, WidgetBuilder> {
+          '/app': (BuildContext context) => new MyApp(),
+          '/login': (BuildContext context) => new LoginPage(),
+        },
       ),
+
       loadingWidgetBuilder: (ctx, data) {
         return new Loading();
       },
     ),
   );
 }
+Future<bool> checkUserAndNavigate(BuildContext context) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final islogin = prefs.getBool('islogin') ?? false;
+  return islogin;
+}
 
-class MyApp extends StatefulWidget {
+class SplashScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    checkUserAndNavigate(context).then((res) {
+      if (res == true) {
+        Navigator.pushReplacementNamed(context, '/app');
+      } else {
+        Navigator.pushReplacementNamed(context, '/login');
+      }
+    });
+
+    return new Scaffold(
+      body: new Card(
+          child: new Center(
+            child:
+            new Text('Loading.....',
+                style: new TextStyle(fontSize: 24.00,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.indigo)
+            ),
+          )
+      ),
+    );
+  }
+}
+
+class MyApp extends StatelessWidget {
+
+  final aid;
+
+
+  MyApp({
+    Key key,
+    this.aid,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return ChangeNotifierProvider<MyCart>(
+      create: (context) => MyCart(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: "kl",
+        home: _MyApp(
+
+        ),
+      ),
+    );
+  }
+
+}
+
+
+class _MyApp extends StatefulWidget {
   // This widget is the root of your application.
 
   @override
   _MyHomeState createState() => new _MyHomeState();
 }
 
-class _MyHomeState extends State<MyApp> {
+class _MyHomeState extends State<_MyApp> {
+
   Widget image_carousel = new Container(
     height: 225.0,
     child: new Carousel(
@@ -56,7 +125,25 @@ class _MyHomeState extends State<MyApp> {
       animationDuration: new Duration(microseconds: 1000),
     ),
   );
-
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+      context: context,
+      builder: (context) => new AlertDialog(
+        title: new Text('آیا مطمئن هستید؟'),
+        content: new Text('آیا میخواهید از برنامه خارج شوید؟'),
+        actions: <Widget>[
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: new Text('نه'),
+          ),
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: new Text('بله'),
+          ),
+        ],
+      ),
+    )) ?? false;
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -64,7 +151,9 @@ class _MyHomeState extends State<MyApp> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    return new Directionality(
+    return new WillPopScope(
+        onWillPop: _onWillPop,
+        child:new Directionality(
       textDirection: TextDirection.rtl,
       child: new Scaffold(
         appBar: new mainappbar(title: "منشور",),
@@ -95,7 +184,7 @@ class _MyHomeState extends State<MyApp> {
 
             //padding
             new Padding(
-              padding: const EdgeInsets.only(top: 18.0, left: 8.0),
+              padding: const EdgeInsets.only(top: 18.0, right: 8.0),
               child: new Text(
                 'محصولات پرطرفدار',
                 style: TextStyle(fontFamily: 'IRASans', fontSize: 18),
@@ -113,6 +202,6 @@ class _MyHomeState extends State<MyApp> {
           ],
         ),
       ),
-    );
+        ));
   }
 }

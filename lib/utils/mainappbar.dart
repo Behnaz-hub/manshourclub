@@ -23,12 +23,13 @@ class mainappbar extends StatefulWidget implements PreferredSizeWidget{
 }
 
 class _mainappbarState extends State<mainappbar> {
+
   int totalProduct = 0 ;
   var shopcartlist = {};
   String TAG ="_mainappbarState";
 
   int shopingamount;
-
+  int fullprice = 0;
 
 
   gevaluet() async {
@@ -49,7 +50,12 @@ class _mainappbarState extends State<mainappbar> {
     totalProduct = response['full_count'];
     shopcartlist = jsonDecode(cartData.body);
     shopingamount = shopcartlist.length;
-print(TAG + "totalproduct: " + totalProduct.toString());
+
+    for(int i = 0; i<(shopingamount -1 ) ; i++){
+      fullprice = fullprice + int.parse(response[i.toString()]['product_datails']['price'])*
+          int.parse(response[i.toString()]['count']);
+
+    }
   }
 
   @override
@@ -57,7 +63,7 @@ print(TAG + "totalproduct: " + totalProduct.toString());
     // TODO: implement build
     gevaluet();
     return   AppBar(
-      backgroundColor: Colors.green[800],
+      backgroundColor: theme.MYColors.darkblue,
       title: new Text(widget.title),
       actions: <Widget>[
         new IconButton(
@@ -77,9 +83,9 @@ print(TAG + "totalproduct: " + totalProduct.toString());
             onPressed: () {
               var route = new MaterialPageRoute(
                   builder: (BuildContext context) => new Cart(
-
                     usershopcart: shopcartlist,
                     shopingamount: shopingamount,
+                    fullprice:fullprice,
                   ));
               Navigator.of(context).push(route);
             }),

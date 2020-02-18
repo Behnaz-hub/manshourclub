@@ -1,22 +1,38 @@
 import 'dart:convert';
 
+import 'package:persian_numbers/persian_numbers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:manshourclub/cart/my_cart.dart';
 import 'package:flutter/material.dart';
-import 'package:manshourclub/main.dart';
-import 'package:manshourclub/pages/ProductDetails.dart';
 import 'package:manshourclub/styles/theme.dart' as Theme;
 import 'package:manshourclub/styles/constants.dart' as Constants;
+import 'package:http/http.dart' as http;
 import 'package:manshourclub/styles/theme.dart';
 import 'package:manshourclub/utils/appbarfunc.dart';
 import 'package:manshourclub/utils/sideDrawer.dart';
+import 'package:provider/provider.dart';
 
 class Cart extends StatefulWidget {
-  final usershopcart;
-  final shopingamount;
+  var usershopcart = {};
+  int shopingamount;
+  int fullprice;
+  final prod_name;
+  final prod_image;
+  final prod_price;
+  String prod_count;
+  final prod_id;
 
   Cart({
     Key key,
     this.usershopcart,
     this.shopingamount,
+    this.fullprice,
+    this.prod_name,
+    this.prod_image,
+    this.prod_price,
+    this.prod_count,
+    this.prod_id,
   }) : super(key: key);
 
   @override
@@ -26,41 +42,35 @@ class Cart extends StatefulWidget {
 class _CartState extends State<Cart> {
   String TAG = "cart";
   int value = 0;
-  String stringValue = '';
 
-  void setfullPrice(price) {
-    setState(() {
-      stringValue = price.toString();
-    });
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    print("shopingamount: "+widget.shopingamount.toString());
+    print("usershopcart: "+widget.usershopcart.toString());
+
     return new Directionality(
       textDirection: TextDirection.rtl,
       child: new Scaffold(
         appBar: new appbar(
-          title: "",
-          totalProduct: widget.shopingamount,
+          title: '',
+          totalProduct: widget.usershopcart['full_count'],
         ),
         drawer: new SideDrawer(),
-        body:new Container(
+        body: new Container(
           alignment: Alignment.topCenter,
-          child:  new ListView.separated(
+          child: widget.usershopcart['full_count'] > 0 ?  new ListView.separated(
               separatorBuilder: (context, index) => Divider(
                 color: Theme.MYColors.productBackGround1,
               ),
               itemCount: (widget.shopingamount - 1),
               itemBuilder: (BuildContext context, int index) {
-                int price = int.parse(widget.usershopcart[index.toString()]
-                ['product_datails']['price']
-                    .toString());
-                int count = int.parse(
-                    widget.usershopcart[index.toString()]['count'].toString());
-                value = value + (price * count);
-
-                print(TAG + "VALE:" + value.toString());
-                return getCartItems(
+                return items(
                   widget.usershopcart[index.toString()]['product_datails']
                   ['product_name']
                       .toString(),
@@ -68,10 +78,14 @@ class _CartState extends State<Cart> {
                   widget.usershopcart[index.toString()]['product_datails']
                   ['price']
                       .toString(),
-                  widget.usershopcart[index.toString()]['product_datails']['pic']
+                  widget.usershopcart[index.toString()]['product_datails']
+                  ['pic']
                       .toString(),
+                  widget.usershopcart[index.toString()]['product_id'],
                 );
-              }),
+              }) : Center(
+            child: Text('سبد خرید شما خالی است!',style: TextStyle(fontFamily: 'IRANSans'),),
+          ),
         ),
         bottomNavigationBar: new Container(
           color: Colors.white,
@@ -79,17 +93,17 @@ class _CartState extends State<Cart> {
             children: <Widget>[
               new Expanded(
                 child: new Text(
-                  ' جمع کل:$value',
-                  style: new TextStyle(fontWeight: FontWeight.bold),
+                  " " + PersianNumbers.toPersian( widget.fullprice.toString()) + " تومان",
+                  style: Theme.CustomTextStyle.drawertext(context),
                 ),
               ),
               new Expanded(
                 child: new MaterialButton(
-                    color: Colors.deepPurple,
+                    color: Theme.MYColors.green,
                     splashColor: Colors.greenAccent,
                     child: new Text(
-                      'Check Out',
-                      style: new TextStyle(color: Colors.white, fontSize: 16.0),
+                      'پرداخت',
+                      style:Theme.CustomTextStyle.whitettxt(context),
                     ),
                     onPressed: () {}),
               ),
@@ -100,35 +114,9 @@ class _CartState extends State<Cart> {
     );
   }
 
-  getCartItems(product_name, prod_count, prod_price, prod_image) {
-    return new CartItem(
-      prod_name: product_name,
-      prod_count: prod_count,
-      prod_price: prod_price,
-      prod_image: prod_image,
-    );
-  }
-}
-
-class CartItem extends StatelessWidget {
-  final prod_name;
-  final prod_image;
-  final prod_price;
-  final prod_count;
-
-//  final prod_id;
-
-  CartItem({
-    this.prod_name,
-    this.prod_image,
-    this.prod_price,
-    this.prod_count,
-//    this.prod_id,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
+  Widget items(product_name, prod_count, prod_price, prod_image, prod_id) {
+    var provider = Provider.of<MyCart>(context);
+    return new Card(
       elevation: 8,
       child: new Padding(
           padding: const EdgeInsets.only(left: 4.0, top: 8.0, right: 4.0),
@@ -157,9 +145,8 @@ class CartItem extends StatelessWidget {
                                 new Padding(
                                   padding: EdgeInsets.all(5),
                                   child: Text(
-                                    prod_price,
-                                    style: Theme.CustomTextStyle.drawertext(
-                                        context),
+                                    PersianNumbers.toPersian(prod_price),
+                                    style: Theme.CustomTextStyle.numbers(context),
                                   ),
                                 ),
                               ],
@@ -167,9 +154,8 @@ class CartItem extends StatelessWidget {
                             new Padding(
                               padding: EdgeInsets.all(5),
                               child: Text(
-                                prod_name,
-                                style:
-                                CustomTextStyle.drawertext(context),
+                                product_name,
+                                style: CustomTextStyle.drawertext(context),
                               ),
                             )
                           ],
@@ -177,15 +163,14 @@ class CartItem extends StatelessWidget {
                       ),
                     ),
                     new Expanded(
-                      flex: 1,
-                      child:new Container(
-                        alignment: Alignment.center,
-                        child: new Text(
-                          (int.parse(prod_count) * int.parse(prod_price)).toString(),
-                          style: CustomTextStyle.drawertext(context),
-                        ),
-                      )
-                    ),
+                        flex: 1,
+                        child: new Container(
+                          alignment: Alignment.center,
+                          child: new Text(
+                            PersianNumbers.toPersian((int.parse(prod_count) * int.parse(prod_price)).toString()),
+                            style: CustomTextStyle.numbers(context),
+                          ),
+                        )),
                     new Expanded(
                         flex: 1,
                         child: new Container(
@@ -195,21 +180,75 @@ class CartItem extends StatelessWidget {
                             children: <Widget>[
                               Column(
                                 children: <Widget>[
-                                  new Padding(
-                                    padding: EdgeInsets.all(5),
-                                    child: new Image.asset(
-                                      'images/icons/increase.png',
-                                      width: 30,
-                                      height: 30,
+                                  new GestureDetector(
+                                    onTap: () async {
+                                      provider.addToCart(int.parse(prod_id));
+                                      SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                      final cid = prefs.getString('cid') ?? "1";
+                                      print(TAG + "cid:" + cid);
+                                      final param = {
+                                        "cid": cid,
+                                      };
+                                      final newcartData = await http.post(
+                                          "${Constants.APILINK}ShopCart.php",
+                                          body: param);
+
+                                      widget.usershopcart = jsonDecode(newcartData.body);
+                                      print(TAG + ":shopcartlist :" + widget.usershopcart.toString());
+                                      setState(() {
+                                        widget.fullprice += int.parse(prod_price) ;
+                                        widget.usershopcart['full_count'] ;
+
+                                        prod_count = (int.parse(prod_count)+1).toString();
+                                        print(TAG + "prod_count:" + prod_count);
+                                      });
+                                    },
+                                    child: Padding(
+                                      padding: EdgeInsets.all(5),
+                                      child: new Image.asset(
+                                        'images/icons/increase.png',
+                                        width: 30,
+                                        height: 30,
+                                      ),
                                     ),
                                   ),
-                                  new Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: Image.asset(
-                                        'images/icons/decrease.png',
-                                        width: 25,
-                                        height: 25,
-                                      )),
+                                  new GestureDetector(
+                                    onTap: () async {
+
+                                          provider.removeFromCart(int.parse(prod_id));
+                                          SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                          final cid = prefs.getString('cid') ?? "1";
+                                          final param = {
+                                          "cid": cid,
+                                          };
+                                          final newcartData = await http.post(
+                                          "${Constants.APILINK}ShopCart.php",
+                                          body: param);
+
+                                          widget.usershopcart = jsonDecode(newcartData.body);
+                                          print(TAG + ":shopcartlist :" + widget.usershopcart.toString());
+                                          setState(() {
+                                            widget.fullprice -=
+                                                int.parse(prod_price);
+                                            widget.usershopcart['full_count'];
+
+                                            prod_count =(int.parse(prod_count) - 1).toString();
+                                            print(TAG + "prod_count:" + prod_count);
+                                            if(int.parse(prod_count) == 0){
+                                              widget.shopingamount -- ;
+                                            }
+                                          });
+                                          },
+                                    child: Padding(
+                                        padding: EdgeInsets.all(5),
+                                        child: Image.asset(
+                                          'images/icons/decrease.png',
+                                          width: 25,
+                                          height: 25,
+                                        )),
+                                  ),
                                 ],
                               ),
                               new Card(
@@ -218,9 +257,8 @@ class CartItem extends StatelessWidget {
                                 child: Container(
                                   padding: EdgeInsets.all(5),
                                   child: Text(
-                                    prod_count,
-                                    style:
-                                    CustomTextStyle.drawertext(context),
+                                    PersianNumbers.toPersian(prod_count.toString()),
+                                    style: CustomTextStyle.numbers(context),
                                   ),
                                 ),
                               )

@@ -8,6 +8,8 @@ import 'package:manshourclub/styles/theme.dart' as Theme;
 import 'package:manshourclub/pages/indication_painter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'main.dart';
+
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
 
@@ -614,13 +616,23 @@ class _LoginPageState extends State<LoginPage>
           "https://manshourclub.com/API/Customers/Login.php",
           body: paramDic);
       final response = jsonDecode(loginData.body);
+      print("LOGIN RESPONSE: " +response.toString());
       if (response['status'] == 'login') {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('cid', response['customer']['cid']);
         prefs.setString('name',
-            response['customer']['fname'] + response['customer']['lname']);
-        prefs.setString('name', response['customer']['email']);
+            response['customer']['fname']);
+        prefs.setString('lname',
+           response['customer']['lname']);
+        prefs.setString('email', response['customer']['email']);
         prefs.setString('mobile', response['customer']['mobile']);
+        prefs.setString('image', response['customer']['avatar']);
+        print("LOGIN image: " + response['customer']['avatar'].toString());
+        prefs.setBool('islogin', true);
+        var route = new MaterialPageRoute(
+            builder: (BuildContext context) => new MyApp()
+        );
+        Navigator.of(context).push(route);
       } else {
         showInSnackBar('شماره موبایل یا رمز عبور وارد شده اشتباه است!',
             Colors.deepOrange, 4);
@@ -739,10 +751,9 @@ class _LoginPageState extends State<LoginPage>
                             await SharedPreferences.getInstance();
                         prefs.setString('cid', cid);
                         prefs.setString(
-                            'name',
-                            signupFNameController.text +
-                                " " +
-                                signupLNameController.text);
+                            'name', signupFNameController.text );
+                        prefs.setString(
+                            'lname', signupLNameController.text);
                         prefs.setString('mobile', signupMobileController.text);
                         Navigator.of(context).pop();
                       } else {

@@ -25,8 +25,9 @@ dependencies:
   flutter_html: ^0.8.2
   http: ^0.12.0+4
   provider: ^4.0.2
-  shared_preferences: ^0.5.6+1
   scoped_model: ^1.0.1
+  persian_numbers: ^0.0.1
+
   flutter:
     sdk: flutter
   carousel_pro:
@@ -74,6 +75,9 @@ flutter:
   - images/products/skt1.jpeg
   - images/icons/decrease.png
   - images/icons/increase.png
+  - images/icons/unknown.png
+
+
 fonts:
   - family: IRANSans
     fonts:

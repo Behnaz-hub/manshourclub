@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:manshourclub/cart/cart.dart';
 import 'package:manshourclub/styles/theme.dart';
+import 'package:persian_numbers/persian_numbers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:manshourclub/styles/constants.dart' as Constants;
@@ -27,27 +28,36 @@ class appbar extends StatefulWidget implements PreferredSizeWidget {
 
 class _appbarState extends State<appbar> {
   var amont = 0;
+  int totalProduct = 0 ;
+  var shopcartlist = {};
+  String TAG ="appbar";
 
+  int shopingamount;
+  int fullprice = 0;
   gevaluet() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final cid = prefs.getString('cid') ?? "1";
     var totalProduct;
     final param = {
-
       "cid":cid,
-
     };
     final cartData = await http.post(
         "${Constants.APILINK}ShopCart.php",
         body: param);
 
     final response = jsonDecode(cartData.body);
+    totalProduct = response['full_count'];
+    shopcartlist = jsonDecode(cartData.body);
+    shopingamount = shopcartlist.length;
 
-    setState(() {
+    for(int i = 0; i<(shopingamount -1 ) ; i++){
+      fullprice = fullprice + int.parse(response[i.toString()]['product_datails']['price'])*
+          int.parse(response[i.toString()]['count']);
+    }
+
       totalProduct = response['full_count'];
-
       amont =totalProduct ;
-    });
+
 
   }
 @override
@@ -61,7 +71,7 @@ class _appbarState extends State<appbar> {
     // TODO: implement build
 
     return AppBar(
-      backgroundColor: Colors.deepPurple,
+      backgroundColor:  theme.MYColors.darkblue,
       title: new Text(widget.title),
       actions: <Widget>[
         new Stack(
@@ -71,22 +81,24 @@ class _appbarState extends State<appbar> {
                 Icons.shopping_cart,
                 color: Colors.white,
               ),
-              onPressed: null,
+              onPressed: (){
+
+              },
             ),
             new Positioned(
                 child: new Stack(
                   children: <Widget>[
                     new Icon(Icons.brightness_1,
                       size: 25 ,
-                      color: theme.MYColors.priceColor,
+                      color: theme.MYColors.red,
                     ),
                     new Positioned(
-                        top:3 ,
-                        right:5 ,
+                        top:0 ,
+                        right:7 ,
                         child: new Center(
                           child: new Text(
-                            '${amont}',
-                            style: CustomTextStyle.whitettxt(context),
+                            PersianNumbers.toPersian(widget.totalProduct.toString()),
+                            style: CustomTextStyle.whitenumbers(context),
                           ),
                         )
                     ),
